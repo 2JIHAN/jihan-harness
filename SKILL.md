@@ -18,13 +18,13 @@ Use this skill when web workflows require user logged-in sessions (e.g., Slack a
 ```bash
 cd <this-skill-folder>/scripts
 
-node 00-check-model.mjs u1                        # Check configured model & proxy status
-node 01-ensure-window.mjs u1                      # Verify app is running and list open tabs
-node 02-open-session.mjs "Task Name" u1 "URL"    # Create session & expose to GUI (once per task)
-node 03-say.mjs "Do this next" u1                 # Send general conversation turn
-node 04-interact.mjs click "Login Button" u1      # Vision-based mouse click
-node 04-interact.mjs type "Search bar" "query" u1 # Vision-based keyboard typing
-node 04-interact.mjs inspect "Read the status" u1 # Visual status inspection
+node 00-check-model.mjs                           # Check configured model & provider status
+node 01-ensure-window.mjs                         # Verify app is running and list open tabs
+node 02-open-session.mjs "Task Name" [URL]        # Create session & expose to GUI (once per task)
+node 03-say.mjs "Do this next"                    # Send general conversation turn
+node 04-interact.mjs click "Login Button"         # Vision-based mouse click
+node 04-interact.mjs type "Search bar" "query"    # Vision-based keyboard typing
+node 04-interact.mjs inspect "Read the status"    # Visual status inspection
 ```
 
 Step `02` stores the session ID in `~/.aside/u/<account>/.last-session`, so subsequent commands do not require specifying the session ID.
@@ -101,25 +101,27 @@ Do not guess profile numbers. The `profiles: Profile N` output shown by `aside a
 
 ### Pass Provider Alongside Model Name
 
+When overriding models via CLI flags, pass the provider flag `-p`:
+
 ```bash
-aside exec -p antigravity -m claude-sonnet-4-6 "instruction"
+aside exec -p <provider> -m <model-id> "instruction"
 ```
 
-Passing the model name alone results in `not available for this account`. Default models per account reside in `defaultModel` inside `~/.aside/u/<account>/settings.json`.
-
-`antigravity` relies on a local proxy (`127.0.0.1:8317`). If that process is down, execution fails. `00-check-model.mjs` verifies this connection.
+Passing the model name alone results in `not available for this account`. Check default models and configured providers per account using `node 00-check-model.mjs`.
 
 ### Send Instructions One Step at a Time
 
 Batching multiple complex steps into a single prompt frequently causes connection timeouts or dropped turns. Short, discrete instructions succeed reliably. When visual verification is required, ask the agent to capture a screenshot and report the file path. Screenshots reside in `~/.aside/u/<account>/sessions/<session>/tmp/` and can be inspected directly.
 
-## Accounts
+## Account Discovery
 
-| Account | Email | Purpose |
-| --- | --- | --- |
-| u0 | tndgud12@gmail.com | Personal |
-| **u1** | doesstudio.official@gmail.com | **Work** |
-| u2 | Local Account | Unauthenticated |
+Aside profiles are isolated under `~/.aside/u/<n>`. Run `node profiles.mjs` to discover available accounts on your machine and their linked Chrome profile directories:
+
+```bash
+node profiles.mjs
+```
+
+All scripts automatically resolve the default or active window's account (or respect `ASIDE_ACCOUNT=<account>` environment variable). You can also pass the account explicitly (e.g. `u0`, `u1`).
 
 ## File Reference
 

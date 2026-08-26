@@ -6,12 +6,11 @@
 //
 // Usage: node 02-open-session.mjs <name> [account] [URL]
 
-import { execFileSync } from 'node:child_process';
 import { mkdirSync, readdirSync } from 'node:fs';
 import { join } from 'node:path';
-import { ask, ensureBridge, saveSession, sessionsDir, userDir, tailOf } from './lib.mjs';
+import { ask, defaultAccount, ensureBridge, executeSql, saveSession, sessionsDir, userDir, tailOf } from './lib.mjs';
 
-let account = 'u1';
+let account = defaultAccount();
 let name = '';
 let url = '';
 
@@ -42,7 +41,7 @@ const db = join(userDir(account), 'state.db');
 const dir = sessionsDir(account);
 mkdirSync(dir, { recursive: true });
 const before = new Set(readdirSync(dir));
-const sql = (q) => execFileSync('sqlite3', [db, q], { encoding: 'utf8' }).trim();
+const sql = (q) => executeSql(db, q);
 
 // Opening via openTab links the URL into the chat session for side panel visibility.
 const prompt = url

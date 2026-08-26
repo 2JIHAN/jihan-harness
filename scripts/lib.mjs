@@ -7,10 +7,42 @@ import { join, basename } from 'node:path';
 
 // Avoid hardcoding. Application paths, proxy endpoints, and models are resolved from configuration and live processes.
 
+let DatabaseSync = null;
+try {
+  const sqlite = await import('node:sqlite');
+  DatabaseSync = sqlite.DatabaseSync || null;
+} catch {}
+
 const home = homedir();
 export const userDir = (account) => join(home, '.aside', 'u', account.replace(/^u/, ''));
 export const sessionsDir = (account) => join(userDir(account), 'sessions');
 const storeFile = (account) => join(userDir(account), '.named-sessions.json');
+
+// Zero-dependency SQLite executor with fallback to sqlite3 CLI
+export function executeSql(dbPath, query) {
+  if (DatabaseSync && existsSync(dbPath)) {
+    try {
+      const db = new DatabaseSync(dbPath);
+      try {
+        if (query.trim().toUpperCase().startsWith('SELECT')) {
+          const stmt = db.prepare(query);
+          const rows = stmt.all();
+          if (rows.length === 0) return '';
+          const firstVal = Object.values(rows[0])[0];
+          return firstVal !== undefined ? String(firstVal) : '';
+        } else {
+          db.exec(query);
+          return '';
+        }
+      } finally {
+        db.close();
+      }
+    } catch {
+      // Fall through to sqlite3 CLI
+    }
+  }
+  return execFileSync('sqlite3', [dbPath, query], { encoding: 'utf8' }).trim();
+}
 
 // Check if Aside app is currently running
 export function isAppRunning() {
@@ -83,6 +115,18 @@ export function getProfiles() {
   }
   rows.sort((a, b) => a.account.localeCompare(b.account));
   return rows;
+}
+
+// Automatically discover default account (prefers open window, then first available, fallback 'u0')
+export function defaultAccount() {
+  if (process.env.ASIDE_ACCOUNT) return process.env.ASIDE_ACCOUNT;
+  try {
+    const rows = getProfiles();
+    const open = rows.find((r) => r.open);
+    if (open) return open.account;
+    if (rows.length > 0) return rows[0].account;
+  } catch {}
+  return 'u0';
 }
 
 // Map account key to Chrome profile directory

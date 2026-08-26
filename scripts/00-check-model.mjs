@@ -8,9 +8,9 @@
 //
 // Usage: node 00-check-model.mjs [account]
 
-import { defaultModel, lastUsedModel, providerBaseUrl } from './lib.mjs';
+import { defaultAccount, defaultModel, lastUsedModel, providerBaseUrl } from './lib.mjs';
 
-const account = process.argv[2] || 'u1';
+const account = process.argv[2] || defaultAccount();
 const set = defaultModel(account);
 const used = lastUsedModel(account);
 

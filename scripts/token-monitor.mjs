@@ -6,7 +6,7 @@
 
 import { existsSync, readdirSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
-import { sessionsDir, userDir } from './lib.mjs';
+import { defaultAccount, sessionsDir, userDir } from './lib.mjs';
 
 // Extract token statistics for a given session
 export function getSessionTokenStats(account, sessionId) {
@@ -104,7 +104,7 @@ export function withTokenTracking(account, sessionId, actionFn) {
 
 // CLI standalone runner
 if (process.argv[1].endsWith('token-monitor.mjs')) {
-  const account = process.argv[2] || 'u1';
+  const account = process.argv[2] || defaultAccount();
   const sessionId = process.argv[3];
   if (!sessionId) {
     console.log('Usage: node token-monitor.mjs [account] <sessionId>');

@@ -15,6 +15,7 @@
 
 import {
   ask,
+  defaultAccount,
   resolveSession,
   tailOf,
   visualClick,
@@ -45,7 +46,7 @@ async function run() {
     case 'goto':
     case 'navigate': {
       const url = rest[0];
-      const account = rest[1] && /^u\d+$/i.test(rest[1]) ? rest[1] : 'u1';
+      const account = rest[1] && /^u\d+$/i.test(rest[1]) ? rest[1] : defaultAccount();
       const sessionName = rest[2] || (rest[1] && !/^u\d+$/i.test(rest[1]) ? rest[1] : undefined);
       const session = resolveSession(account, sessionName);
       if (!url) {
@@ -59,7 +60,7 @@ async function run() {
 
     case 'click': {
       const target = rest[0];
-      const account = rest[1] && /^u\d+$/i.test(rest[1]) ? rest[1] : 'u1';
+      const account = rest[1] && /^u\d+$/i.test(rest[1]) ? rest[1] : defaultAccount();
       const sessionName = rest[2] || (rest[1] && !/^u\d+$/i.test(rest[1]) ? rest[1] : undefined);
       const session = resolveSession(account, sessionName);
       if (!target) {
@@ -75,7 +76,7 @@ async function run() {
     case 'input': {
       const target = rest[0];
       const text = rest[1];
-      const account = rest[2] && /^u\d+$/i.test(rest[2]) ? rest[2] : 'u1';
+      const account = rest[2] && /^u\d+$/i.test(rest[2]) ? rest[2] : defaultAccount();
       const sessionName = rest[3] || (rest[2] && !/^u\d+$/i.test(rest[2]) ? rest[2] : undefined);
       const session = resolveSession(account, sessionName);
       if (!target || text === undefined) {
@@ -90,7 +91,7 @@ async function run() {
     case 'inspect':
     case 'check': {
       const question = rest[0];
-      const account = rest[1] && /^u\d+$/i.test(rest[1]) ? rest[1] : 'u1';
+      const account = rest[1] && /^u\d+$/i.test(rest[1]) ? rest[1] : defaultAccount();
       const sessionName = rest[2] || (rest[1] && !/^u\d+$/i.test(rest[1]) ? rest[1] : undefined);
       const session = resolveSession(account, sessionName);
       if (!question) {
@@ -104,7 +105,7 @@ async function run() {
 
     case 'scroll': {
       const dir = rest[0] === 'up' ? 'up' : 'down';
-      const account = rest[1] && /^u\d+$/i.test(rest[1]) ? rest[1] : 'u1';
+      const account = rest[1] && /^u\d+$/i.test(rest[1]) ? rest[1] : defaultAccount();
       const sessionName = rest[2] || (rest[1] && !/^u\d+$/i.test(rest[1]) ? rest[1] : undefined);
       const session = resolveSession(account, sessionName);
       const out = withTokenTracking(account, session, () => visualScroll(account, dir, session));
@@ -114,7 +115,7 @@ async function run() {
 
     case 'fallback': {
       const instruction = rest[0];
-      const account = rest[1] && /^u\d+$/i.test(rest[1]) ? rest[1] : 'u1';
+      const account = rest[1] && /^u\d+$/i.test(rest[1]) ? rest[1] : defaultAccount();
       const sessionName = rest[2] || (rest[1] && !/^u\d+$/i.test(rest[1]) ? rest[1] : undefined);
       const session = resolveSession(account, sessionName);
       if (!instruction) {

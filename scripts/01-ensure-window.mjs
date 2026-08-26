@@ -6,9 +6,9 @@
 
 import { execFileSync } from 'node:child_process';
 import { join } from 'node:path';
-import { ask, ensureBridge, tailOf } from './lib.mjs';
+import { ask, defaultAccount, ensureBridge, tailOf } from './lib.mjs';
 
-const account = process.argv[2] || 'u1';
+const account = process.argv[2] || defaultAccount();
 
 // Print profile status explicitly to avoid assumptions.
 console.log(execFileSync(process.execPath, [join(import.meta.dirname, 'profiles.mjs')], { encoding: 'utf8' }));
