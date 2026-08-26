@@ -1,28 +1,28 @@
 #!/usr/bin/env node
-// 프로필 현황을 읽습니다. 어떤 작업이든 이것을 먼저 확인하고 이어갑니다.
+// Inspect Aside profile configuration. Run this first before initiating workflows.
 //
-// 계정 번호와 프로필 폴더 이름은 일치하지 않습니다. u1 은 "Profile 1" 이 아닙니다.
-// 넘겨짚지 말고 여기서 나온 값을 쓰십시오.
+// Account IDs do not strictly match profile folder names (e.g. u1 is not "Profile 1").
+// Use values discovered here rather than assuming mappings.
 //
-// 사용법: node profiles.mjs [계정]     계정을 주면 그 계정의 브리지까지 확인합니다.
+// Usage: node profiles.mjs [account]     Passing account verifies bridge connectivity as well.
 
 import { browserReachable, getProfiles, isAppRunning, profileFor } from './lib.mjs';
 
 const appRunning = isAppRunning();
 const rows = getProfiles();
 
-console.log(appRunning ? 'Aside 실행 중' : 'Aside 꺼져 있음 (창 칸은 다음 실행 시 복원될 목록입니다)');
-console.log('계정  프로필 폴더    표시 이름      이메일                          창     최근활동');
-console.log('----  ------------  ------------  ------------------------------  -----  --------');
+console.log(appRunning ? 'Aside is running' : 'Aside is closed (open column shows profiles restored on next launch)');
+console.log('Account  Profile Dir   Display Name   Email                           Window  Last Active');
+console.log('-------  ------------  -------------  ------------------------------  ------  -----------');
 for (const r of rows) {
   console.log(
-    `${r.account.padEnd(6)}${r.folder.padEnd(14)}${r.label.padEnd(14)}${r.email.padEnd(32)}${(r.open ? '열림' : r.restore ? '복원대상' : '-').padEnd(9)}${r.lastActive}`
+    `${r.account.padEnd(9)}${r.folder.padEnd(14)}${r.label.padEnd(15)}${r.email.padEnd(32)}${(r.open ? 'Open' : r.restore ? 'Restore' : '-').padEnd(8)}${r.lastActive}`
   );
 }
 
 const account = process.argv[2];
 if (account) {
   const folder = profileFor(account);
-  console.log(`\n${account} → 프로필 "${folder}"`);
-  console.log(`브라우저 접근: ${browserReachable(account) ? '정상' : '닿지 않음 (01-ensure-window.mjs 로 띄우십시오)'}`);
+  console.log(`\n${account} -> Profile "${folder}"`);
+  console.log(`Browser bridge: ${browserReachable(account) ? 'OK' : 'Unreachable (run 01-ensure-window.mjs to launch)'}`);
 }

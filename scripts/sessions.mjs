@@ -1,6 +1,6 @@
 #!/usr/bin/env node
-// 이름 붙인 세션 목록을 봅니다. GUI 표시 여부도 함께 확인합니다.
-// 사용법: node sessions.mjs [계정]
+// View list of saved named sessions and check their GUI visibility status.
+// Usage: node sessions.mjs [account]
 
 import { execFileSync } from 'node:child_process';
 import { join } from 'node:path';
@@ -12,7 +12,7 @@ const all = loadSessions(account);
 const names = Object.keys(all);
 
 if (names.length === 0) {
-  console.log('저장된 세션이 없습니다.');
+  console.log('No saved sessions found.');
   process.exit(0);
 }
 
@@ -24,6 +24,6 @@ for (const n of names) {
       encoding: 'utf8',
     }).trim();
   } catch {}
-  const shown = eph === '0' ? 'GUI 표시됨' : eph === '' ? '세션 없음' : 'GUI 안 보임';
-  console.log(`${n.padEnd(24)} ${id}  ${shown}  (${updatedAt.slice(0, 16).replace('T', ' ')})`);
+  const shown = eph === '0' ? 'GUI Visible' : eph === '' ? 'Session Missing' : 'GUI Hidden';
+  console.log(`${n.padEnd(24)} ${id}  ${shown.padEnd(16)} (${updatedAt.slice(0, 16).replace('T', ' ')})`);
 }

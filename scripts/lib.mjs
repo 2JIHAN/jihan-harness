@@ -1,18 +1,18 @@
-// 공통 도구 — Aside CLI 호출, 프로필 브리지 확인, 세션 보관.
+// Shared library — Aside CLI execution, profile bridge verification, and session persistence.
 
 import { execFileSync } from 'node:child_process';
 import { existsSync, mkdirSync, readdirSync, readFileSync, statSync, writeFileSync } from 'node:fs';
 import { homedir } from 'node:os';
 import { join, basename } from 'node:path';
 
-// 하드코딩하지 않습니다. 앱 경로, 프록시 주소, 모델은 모두 설정과 실행 중인 상태에서 읽습니다.
+// Avoid hardcoding. Application paths, proxy endpoints, and models are resolved from configuration and live processes.
 
 const home = homedir();
 export const userDir = (account) => join(home, '.aside', 'u', account.replace(/^u/, ''));
 export const sessionsDir = (account) => join(userDir(account), 'sessions');
 const storeFile = (account) => join(userDir(account), '.named-sessions.json');
 
-// 앱 실행 여부 확인
+// Check if Aside app is currently running
 export function isAppRunning() {
   try {
     execFileSync('pgrep', ['-f', 'Aside.app/Contents/MacOS/Aside'], { stdio: 'pipe' });
@@ -22,7 +22,7 @@ export function isAppRunning() {
   }
 }
 
-// 앱 번들 경로 (.app)
+// Locate Aside app bundle path (.app)
 export function appBundlePath() {
   if (existsSync('/Applications/Aside.app')) return '/Applications/Aside.app';
   try {
@@ -32,10 +32,10 @@ export function appBundlePath() {
   return '/Applications/Aside.app';
 }
 
-// Aside 앱이 꺼져 있으면 포커스를 뺏지 않고 백그라운드로 실행합니다.
+// Launch Aside in background without stealing active focus if not running
 export function ensureAppRunning({ waitSec = 15, background = true } = {}) {
   if (isAppRunning()) return true;
-  console.error('Aside 앱이 실행되어 있지 않아 백그라운드로 켭니다.');
+  console.error('Aside app is not running. Launching in background.');
   const appPath = appBundlePath();
   if (background) {
     execFileSync('open', ['-g', '-a', appPath]);
@@ -49,7 +49,7 @@ export function ensureAppRunning({ waitSec = 15, background = true } = {}) {
   return isAppRunning();
 }
 
-// ── 프로필 동적 조회 ──────────────────────────────────────────
+// ── Profile Discovery ─────────────────────────────────────────
 export function getProfiles() {
   ensureAppRunning({ background: true });
   const appRunning = isAppRunning();
@@ -85,7 +85,7 @@ export function getProfiles() {
   return rows;
 }
 
-// 계정 번호와 프로필 폴더 매핑
+// Map account key to Chrome profile directory
 export function profileFor(account) {
   const binds =
     JSON.parse(readFileSync(join(home, '.aside', 'accounts.json'), 'utf8')).profileAccountBindings || {};
@@ -93,13 +93,13 @@ export function profileFor(account) {
   for (const e of Object.values(binds)) {
     if (e.accountId === want && e.profilePath) return basename(e.profilePath);
   }
-  throw new Error(`${account} 에 연결된 프로필을 찾지 못했습니다.`);
+  throw new Error(`Could not find profile bound to account ${account}.`);
 }
 
-// 브라우저에 닿는지 봅니다.
+// Check if browser bridge is reachable
 export function browserReachable(account, session) {
   try {
-    const out = ask(account, '지금 보고 있는 탭의 주소를 그대로 한 줄로 알려 주십시오. 아무것도 클릭하지 마십시오.', session);
+    const out = ask(account, 'Reply with only the URL of the active tab in one line. Do not click anything.', session);
     return /https?:\/\/|chrome:\/\/|chrome-extension:\/\//.test(out);
   } catch {
     return false;
@@ -108,48 +108,47 @@ export function browserReachable(account, session) {
 
 export const bridgeOk = browserReachable;
 
-// 닿지 않으면 그 계정의 프로필로 창을 백그라운드(포커스 비탈취)로 띄우고 기다립니다.
+// Launch profile window in background without stealing focus if unreachable
 export function ensureBridge(account, waitSec = 45) {
   ensureAppRunning({ background: true });
   if (bridgeOk(account)) return true;
 
   const profile = profileFor(account);
-  console.error(`브라우저에 닿지 않아 백그라운드에서 프로필 "${profile}" 창을 띄웁니다.`);
+  console.error(`Browser unreachable. Launching profile "${profile}" window in background.`);
   const appPath = appBundlePath();
-  // open -g 는 사용자의 현재 활성 창 포커스를 뺏지 않고 백그라운드에서 창을 실행합니다.
   execFileSync('open', ['-g', '-a', appPath, '--args', `--profile-directory=${profile}`]);
 
   for (let waited = 0; waited < waitSec; waited += 3) {
     execFileSync('sleep', ['3']);
     if (bridgeOk(account)) {
-      console.error(`  ${waited + 3}초에 브리지 연결되었습니다.`);
+      console.error(`  Bridge connection established in ${waited + 3}s.`);
       return true;
     }
   }
-  console.error(`실패: ${profile} 창이 ${waitSec}초 안에 준비되지 않았습니다.`);
+  console.error(`Failed: Profile "${profile}" window did not become ready within ${waitSec}s.`);
   return false;
 }
 
-// ── 모델 ──────────────────────────────────────────────────
+// ── Models ────────────────────────────────────────────────────
 export function defaultModel(account) {
   const m = JSON.parse(readFileSync(join(userDir(account), 'settings.json'), 'utf8')).defaultModel || {};
   return { provider: m.provider, modelId: m.modelId };
 }
 
-// 그 계정에 등록된 프로바이더 설정을 읽습니다. (~/.aside/u/<n>/models.json)
+// Read provider configurations registered for the account (~/.aside/u/<n>/models.json)
 export function providersOf(account) {
   const f = join(userDir(account), 'models.json');
   if (!existsSync(f)) return {};
   return JSON.parse(readFileSync(f, 'utf8')).providers || {};
 }
 
-// 기본 모델이 쓰는 프로바이더의 baseUrl 을 설정에서 그대로 가져옵니다.
+// Get baseUrl of the provider used by the default model
 export function providerBaseUrl(account, key) {
   const p = providersOf(account)[key || defaultModel(account).provider];
   return p?.baseUrl || null;
 }
 
-// ── 이름 붙인 세션 ─────────────────────────────────────────
+// ── Named Sessions ────────────────────────────────────────────
 export function loadSessions(account) {
   const f = storeFile(account);
   return existsSync(f) ? JSON.parse(readFileSync(f, 'utf8')) : {};
@@ -159,22 +158,21 @@ export function saveSession(account, name, id) {
   const all = loadSessions(account);
   all[name] = { id, updatedAt: new Date().toISOString() };
   writeFileSync(storeFile(account), JSON.stringify(all, null, 2));
-  writeFileSync(join(userDir(account), '.last-session'), id); // 이름을 안 줄 때를 위해 남깁니다.
+  writeFileSync(join(userDir(account), '.last-session'), id);
 }
 
 export function resolveSession(account, name) {
   if (name) {
     const hit = loadSessions(account)[name];
-    if (!hit) throw new Error(`"${name}" 이름의 세션이 없습니다. sessions.mjs 로 목록을 보십시오.`);
+    if (!hit) throw new Error(`No session named "${name}" found. Run sessions.mjs to view available sessions.`);
     return hit.id;
   }
   const f = join(userDir(account), '.last-session');
-  if (!existsSync(f)) throw new Error('세션이 없습니다. 먼저 02-open-session.mjs 를 실행하십시오.');
+  if (!existsSync(f)) throw new Error('No active session found. Please run 02-open-session.mjs first.');
   return readFileSync(f, 'utf8').trim();
 }
 
-// ── 지시 보내기 ────────────────────────────────────────────
-// 한 턴에 허용할 시간. 웜 2~6초, 콜드 11초 정도이므로 이보다 오래 걸리면 매달린 것입니다.
+// ── Command Execution ─────────────────────────────────────────
 export const TURN_TIMEOUT_MS = Number(process.env.ASIDE_TURN_TIMEOUT_MS || 120_000);
 
 export function ask(account, prompt, session, { timeout = TURN_TIMEOUT_MS } = {}) {
@@ -187,17 +185,17 @@ export function ask(account, prompt, session, { timeout = TURN_TIMEOUT_MS } = {}
   try {
     return run();
   } catch (e) {
-    // 데몬과 확장 사이 연결이 간헐적으로 끊기면 오류가 아니라 무한 대기로 나타납니다.
-    // 저절로 풀리는 성질이라 한 번만 다시 시도하고, 그래도 안 되면 사람이 알아볼 수 있게 알립니다.
+    // When the connection between the daemon and extension intermittently drops, it manifests as a hang.
+    // Retrying once resolves it automatically in most cases.
     if (isTimeout(e)) {
-      console.error(`${Math.round(timeout / 1000)}초 안에 응답이 없어 한 번 더 시도합니다. (연결이 일시적으로 끊긴 상태입니다)`);
+      console.error(`No response within ${Math.round(timeout / 1000)}s. Retrying once (transient bridge disconnect)...`);
       try {
         return run();
       } catch (e2) {
         if (isTimeout(e2)) {
           throw new Error(
-            '두 번 모두 응답이 없습니다. 데몬과 브라우저 확장의 연결이 끊긴 상태로 보입니다.\n' +
-              '  잠시 뒤 다시 시도하십시오. 반복되면 Aside 앱을 다시 띄우십시오.'
+            'Both attempts timed out. The connection between the Aside daemon and browser extension appears broken.\n' +
+              '  Please retry in a moment. If this persists, restart the Aside application.'
           );
         }
         throw e2;
@@ -208,10 +206,7 @@ export function ask(account, prompt, session, { timeout = TURN_TIMEOUT_MS } = {}
   }
 }
 
-// 가장 최근 세션이 실제로 쓴 모델입니다.
-//
-// settings.json 을 파일로 직접 고치면 데몬이 바로 읽지 않습니다(수십 초에서 수 분 지연).
-// 그래서 "설정값"과 "실제로 쓰인 값"이 다를 수 있어, 둘을 따로 확인해야 합니다.
+// Extract model used in the most recent session
 export function lastUsedModel(account) {
   const dir = sessionsDir(account);
   const recent = readdirSync(dir)
@@ -240,26 +235,26 @@ export function artifactsDir() {
   return d;
 }
 
-// ── 시각 기반 인터랙션 (Vision-First UI Simulation) ───────────
-// 원칙: ~/.aside/u/<account>/AGENTS.md 및 MEMORY.md 에 시각 우선 원칙이 영구 각인되어 있으므로
-// 매 턴 긴 접두사를 붙이지 않고 자연스럽고 가벼운 프롬프트로 소통하여 토큰을 절감합니다.
+// ── Vision-First UI Simulation ────────────────────────────────
+// Principles: Vision-first rules are permanently imprinted in AGENTS.md / MEMORY.md.
+// Prompts remain short, natural, and token-efficient without boilerplate prefixes.
 
 export function visualNavigate(account, url, session) {
-  return ask(account, `주소 "${url}"(으)로 이동하고 페이지 제목과 주요 내용을 한 줄로 요약해 주십시오.`, session);
+  return ask(account, `Navigate to "${url}" and summarize the page title and key contents in one line.`, session);
 }
 
 export function visualClick(account, target, session) {
-  return ask(account, `화면에서 "${target}"(을)를 찾아 마우스로 클릭해 주십시오.`, session);
+  return ask(account, `Locate "${target}" on screen and click it with the mouse.`, session);
 }
 
 export function visualType(account, target, text, session) {
-  return ask(account, `화면에서 "${target}"(을)를 찾아 "${text}"(을)를 입력해 주십시오.`, session);
+  return ask(account, `Locate "${target}" on screen and type "${text}".`, session);
 }
 
 export function visualInspect(account, question, session) {
-  return ask(account, `화면을 확인하고 다음 질문에 답해 주십시오: ${question}`, session);
+  return ask(account, `Inspect the current screen and answer: ${question}`, session);
 }
 
 export function visualScroll(account, direction = 'down', session) {
-  return ask(account, `화면을 ${direction === 'down' ? '아래로' : '위로'} 스크롤해 주십시오.`, session);
+  return ask(account, `Scroll the screen ${direction === 'down' ? 'down' : 'up'}.`, session);
 }

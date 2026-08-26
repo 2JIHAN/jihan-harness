@@ -1,7 +1,7 @@
 #!/usr/bin/env node
-// 3단계 — 열어 둔 세션에 지시를 한 턴 보냅니다.
-// 세션에 이어 붙으므로 앞 맥락을 다시 설명할 필요가 없습니다. (콜드 11초 → 웜 2초)
-// 사용법: node 03-say.mjs "지시" [계정] [세션이름]
+// Step 3 — Send a single turn of instruction to an open session.
+// Reusing sessions preserves context and runs 5x faster (Cold: 11s -> Warm: 2s).
+// Usage: node 03-say.mjs "Instruction" [account] [sessionName]
 
 import { ask, resolveSession, tailOf } from './lib.mjs';
 
@@ -10,7 +10,7 @@ const account = process.argv[3] || 'u1';
 const name = process.argv[4];
 
 if (!message) {
-  console.error('사용법: node 03-say.mjs "지시" [계정] [세션이름]');
+  console.error('Usage: node 03-say.mjs "Instruction" [account] [sessionName]');
   process.exit(1);
 }
 

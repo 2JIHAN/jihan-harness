@@ -1,17 +1,17 @@
 #!/usr/bin/env node
-// 4단계 — 시각 기반(Vision-First) 브라우저 인터랙션 모듈 CLI
+// Step 4 — Vision-First browser interaction CLI module.
 //
-// 원칙:
-// 1. 대규모 HTML 덤프나 전체 DOM 조회를 지양하고, 스크린샷 기반 시각 인지와 마우스/키보드 입력을 모사합니다.
-// 2. 불가피한 상황(CAPTCHA, 비가시적 데이터 확인 등)에서만 fallback 모드를 사용합니다.
+// Principles:
+// 1. Avoid large HTML dumps or DOM traversal; simulate mouse and keyboard actions from visual inspection.
+// 2. Fall back to DOM/direct fetch only under unavoidable circumstances (CAPTCHA, invisible data).
 //
-// 사용법:
-//   node 04-interact.mjs goto <URL> [계정] [세션]
-//   node 04-interact.mjs click <대상설명> [계정] [세션]
-//   node 04-interact.mjs type <입력칸설명> <입력값> [계정] [세션]
-//   node 04-interact.mjs inspect <질문> [계정] [세션]
-//   node 04-interact.mjs scroll [down|up] [계정] [세션]
-//   node 04-interact.mjs fallback <지시> [계정] [세션]
+// Usage:
+//   node 04-interact.mjs goto <URL> [account] [session]
+//   node 04-interact.mjs click <targetDescription> [account] [session]
+//   node 04-interact.mjs type <fieldDescription> <value> [account] [session]
+//   node 04-interact.mjs inspect <question> [account] [session]
+//   node 04-interact.mjs scroll [down|up] [account] [session]
+//   node 04-interact.mjs fallback <instruction> [account] [session]
 
 import {
   ask,
@@ -28,13 +28,13 @@ import { withTokenTracking } from './token-monitor.mjs';
 const [action, ...rest] = process.argv.slice(2);
 
 if (!action) {
-  console.log(`사용법:
-  node 04-interact.mjs goto <URL> [계정] [세션]
-  node 04-interact.mjs click <클릭대상> [계정] [세션]
-  node 04-interact.mjs type <입력칸> <입력값> [계정] [세션]
-  node 04-interact.mjs inspect <질문> [계정] [세션]
-  node 04-interact.mjs scroll [down|up] [계정] [세션]
-  node 04-interact.mjs fallback <지시> [계정] [세션]`);
+  console.log(`Usage:
+  node 04-interact.mjs goto <URL> [account] [session]
+  node 04-interact.mjs click <targetDescription> [account] [session]
+  node 04-interact.mjs type <fieldDescription> <value> [account] [session]
+  node 04-interact.mjs inspect <question> [account] [session]
+  node 04-interact.mjs scroll [down|up] [account] [session]
+  node 04-interact.mjs fallback <instruction> [account] [session]`);
   process.exit(0);
 }
 
@@ -49,7 +49,7 @@ async function run() {
       const sessionName = rest[2] || (rest[1] && !/^u\d+$/i.test(rest[1]) ? rest[1] : undefined);
       const session = resolveSession(account, sessionName);
       if (!url) {
-        console.error('URL을 입력하십시오. 예: node 04-interact.mjs goto https://example.com');
+        console.error('Please specify a URL. Example: node 04-interact.mjs goto https://example.com');
         process.exit(1);
       }
       const out = withTokenTracking(account, session, () => visualNavigate(account, url, session));
@@ -63,7 +63,7 @@ async function run() {
       const sessionName = rest[2] || (rest[1] && !/^u\d+$/i.test(rest[1]) ? rest[1] : undefined);
       const session = resolveSession(account, sessionName);
       if (!target) {
-        console.error('클릭 대상을 입력하십시오. 예: node 04-interact.mjs click "로그인 버튼"');
+        console.error('Please specify a target to click. Example: node 04-interact.mjs click "Login button"');
         process.exit(1);
       }
       const out = withTokenTracking(account, session, () => visualClick(account, target, session));
@@ -79,7 +79,7 @@ async function run() {
       const sessionName = rest[3] || (rest[2] && !/^u\d+$/i.test(rest[2]) ? rest[2] : undefined);
       const session = resolveSession(account, sessionName);
       if (!target || text === undefined) {
-        console.error('입력 칸과 값을 입력하십시오. 예: node 04-interact.mjs type "검색창" "검색어"');
+        console.error('Please specify an input field and value. Example: node 04-interact.mjs type "Search input" "keyword"');
         process.exit(1);
       }
       const out = withTokenTracking(account, session, () => visualType(account, target, text, session));
@@ -94,7 +94,7 @@ async function run() {
       const sessionName = rest[2] || (rest[1] && !/^u\d+$/i.test(rest[1]) ? rest[1] : undefined);
       const session = resolveSession(account, sessionName);
       if (!question) {
-        console.error('질문을 입력하십시오. 예: node 04-interact.mjs inspect "현재 보이는 제목이 무엇인가"');
+        console.error('Please specify an inspection question. Example: node 04-interact.mjs inspect "What is the visible title?"');
         process.exit(1);
       }
       const out = withTokenTracking(account, session, () => visualInspect(account, question, session));
@@ -118,17 +118,17 @@ async function run() {
       const sessionName = rest[2] || (rest[1] && !/^u\d+$/i.test(rest[1]) ? rest[1] : undefined);
       const session = resolveSession(account, sessionName);
       if (!instruction) {
-        console.error('폴백 지시를 입력하십시오.');
+        console.error('Please specify a fallback instruction.');
         process.exit(1);
       }
-      const prompt = `[폴백 모드]: ${instruction}`;
+      const prompt = `[FALLBACK MODE]: ${instruction}`;
       const out = withTokenTracking(account, session, () => ask(account, prompt, session));
       console.log(tailOf(out, 10));
       break;
     }
 
     default:
-      console.error(`알 수 없는 액션: ${action}`);
+      console.error(`Unknown action: ${action}`);
       process.exit(1);
   }
 }
