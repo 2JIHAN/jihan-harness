@@ -1,6 +1,6 @@
 ---
 name: delegate-to-aside
-description: Automates the Aside AI browser by exchanging chat turns. Use when web tasks require user's logged-in accounts or when the user needs to watch progress in real time via the GUI.
+description: Automates the Aside AI browser by exchanging chat turns. Use when web tasks require the user's logged-in accounts (e.g. Slack settings, AWS/GCP, internal dashboards) or real-time GUI visibility. Triggers include "aside", "aside browser", "delegate to aside", "open in aside", "web task with login", or "check aside session". Prefer this over headless browser automation or Computer Use when authenticated sessions in Aside are required.
 ---
 
 # Aside Browser Automation
