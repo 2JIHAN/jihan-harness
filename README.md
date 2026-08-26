@@ -6,8 +6,6 @@ Aside 브라우저의 내장 에이전트에게 **자연어 지시를 한 턴씩
 
 ## 설치
 
-### 1. npx skills (권장)
-
 대상 프로젝트 폴더에서 실행하거나, `-g` 플래그로 사용자 PC 전역에 설치합니다.
 
 ```bash
@@ -17,14 +15,6 @@ npx skills add 2JIHAN/delegate-to-aside
 # 사용자 PC 전역(Antigravity, Claude Code 등 공용)에 설치
 npx skills add 2JIHAN/delegate-to-aside -g
 ```
-
-### 2. 로컬 심링크 설치
-
-```bash
-./install.sh ~/내프로젝트
-```
-
-`.claude/skills`, `.agents/skills`, `skills` 중 그 프로젝트에 이미 있는 폴더를 찾아 겁니다.
 
 ## 빠른 시작
 
@@ -47,7 +37,6 @@ node 00-sync-aside-rules.mjs
 ## 문서
 
 - [SKILL.md](SKILL.md) — 에이전트가 읽는 운용 규칙. 세션 ID 규칙, ephemeral flip, 프로필 정합성 등 실측으로 확인한 함정이 전부 여기 있습니다
-- [references/repl-surface.md](references/repl-surface.md) — `aside repl` 저수준 API 설명
 
 ## 라이선스
 

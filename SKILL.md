@@ -135,7 +135,6 @@ aside exec -p antigravity -m claude-sonnet-4-6 "지시"
 | `profiles.mjs` | 계정과 Aside 프로필 번호 매핑 조회 |
 | `sessions.mjs` | 저장된 세션 목록 조회 |
 | `token-monitor.mjs` | 턴별 토큰 사용량 추적 |
-| `references/repl-surface.md` | repl 저수준 API 설명 (이전 문서 보존본) |
 
 ## 실패했을 때
 
