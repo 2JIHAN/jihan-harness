@@ -1,43 +1,43 @@
 # delegate-to-aside
 
-Aside 브라우저의 내장 에이전트에게 **자연어 지시를 한 턴씩 보내고 응답을 받는** 방식으로 웹 작업을 자동화하는 에이전트 스킬입니다. 사용자가 로그인해 둔 계정 그대로 동작하고, 진행 과정이 GUI에 실시간으로 보입니다.
+An agent skill that automates web tasks by **sending natural language instructions one turn at a time and receiving responses** from the Aside AI browser's embedded agent. Operates using the user's logged-in accounts directly, with real-time visual progress visible in the GUI.
 
-외부 의존성이 없습니다. Node 18+ 표준 라이브러리와 `aside` CLI만 씁니다.
+Zero external dependencies. Requires only Node.js 18+ and the `aside` CLI.
 
-## 설치
+## Installation
 
-대상 프로젝트 폴더에서 실행하거나, `-g` 플래그로 사용자 PC 전역에 설치합니다.
+Install into the current project directory or globally across your machine using `-g`.
 
 ```bash
-# 특정 프로젝트에 설치
+# Install to a specific project
 npx skills add 2JIHAN/delegate-to-aside
 
-# 사용자 PC 전역(Antigravity, Claude Code 등 공용)에 설치
+# Install globally (shared across Antigravity, Claude Code, etc.)
 npx skills add 2JIHAN/delegate-to-aside -g
 ```
 
-## 빠른 시작
+## Quick Start
 
 ```bash
 cd skills/scripts
 
-node 00-check-model.mjs u1                      # 모델과 프록시 상태 확인
-node 01-ensure-window.mjs u1                    # 앱 실행 확인, 탭 목록
-node 02-open-session.mjs "작업 이름" u1 "URL"    # 세션 생성 및 GUI 가시화 (한 번만)
-node 03-say.mjs "자연어 지시" u1                # 대화 턴 전송
-node 04-interact.mjs click "로그인 버튼" u1     # 시각 기반 조작
+node 00-check-model.mjs u1                      # Check configured model & proxy status
+node 01-ensure-window.mjs u1                    # Verify running app & list open tabs
+node 02-open-session.mjs "Task Name" u1 "URL"   # Create session & expose to GUI (once per task)
+node 03-say.mjs "Instruction" u1                # Send conversation turn
+node 04-interact.mjs click "Login Button" u1    # Vision-based UI interaction
 ```
 
-한 번만 실행해 두면 좋은 것이 하나 있습니다. 모든 Aside 계정의 `AGENTS.md`에 시각 우선 조작 원칙을 각인해, 턴마다 같은 지침을 다시 보내지 않아도 되게 만듭니다.
+Recommended initial setup: inject vision-first interaction principles into all Aside accounts' `AGENTS.md` so guidelines do not need to be repeated every turn:
 
 ```bash
 node 00-sync-aside-rules.mjs
 ```
 
-## 문서
+## Documentation
 
-- [SKILL.md](skills/SKILL.md) — 에이전트가 읽는 운용 규칙. 세션 ID 규칙, ephemeral flip, 프로필 정합성 등 실측으로 확인한 함정이 전부 정리되어 있습니다.
+- [SKILL.md](skills/SKILL.md) — Operational guidelines for agents. Contains empirically verified patterns including session ID formatting, ephemeral flag toggling, and profile alignment.
 
-## 라이선스
+## License
 
 MIT
