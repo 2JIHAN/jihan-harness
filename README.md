@@ -1,25 +1,36 @@
-# delegate-to-aside
+# Agent Skills Catalog
 
-An agent skill that automates web tasks by **sending natural language instructions one turn at a time and receiving responses** from the Aside AI browser's embedded agent. Operates using the user's logged-in accounts directly, with real-time visual progress visible in the GUI.
+A collection of production-ready AI agent skills compatible with `npx skills`, Claude Code, Antigravity, Cursor, and other modern AI agent frameworks.
 
-Zero external dependencies. Requires only Node.js 18+ and the `aside` CLI.
+## Available Skills
+
+### [`delegate-to-aside`](skills/delegate-to-aside/SKILL.md)
+Automates the Aside AI browser by exchanging chat turns. Operates using the user's logged-in accounts directly, with real-time visual progress visible in the GUI.
+
+- **Requirements**: Node.js 18+, `aside` CLI
+- **Path**: `skills/delegate-to-aside/`
+
+---
 
 ## Installation
 
 Install into the current project directory or globally across your machine using `-g`.
 
 ```bash
-# Install to a specific project
+# Interactive selection (choose from available skills)
 npx skills add 2JIHAN/delegate-to-aside
 
-# Install globally (shared across Antigravity, Claude Code, etc.)
-npx skills add 2JIHAN/delegate-to-aside -g
+# Install specific skill directly
+npx skills add 2JIHAN/delegate-to-aside --skill delegate-to-aside
+
+# Install globally (shared across Antigravity, Claude Code, Cursor, etc.)
+npx skills add 2JIHAN/delegate-to-aside --skill delegate-to-aside -g
 ```
 
-## Quick Start
+## Quick Start (`delegate-to-aside`)
 
 ```bash
-cd skills/scripts
+cd skills/delegate-to-aside/scripts
 
 node 00-check-model.mjs u1                      # Check configured model & proxy status
 node 01-ensure-window.mjs u1                    # Verify running app & list open tabs
@@ -36,7 +47,7 @@ node 00-sync-aside-rules.mjs
 
 ## Documentation
 
-- [SKILL.md](skills/SKILL.md) — Operational guidelines for agents. Contains empirically verified patterns including session ID formatting, ephemeral flag toggling, and profile alignment.
+- [skills/delegate-to-aside/SKILL.md](skills/delegate-to-aside/SKILL.md) — Operational guidelines for agents. Contains empirically verified patterns including session ID formatting, ephemeral flag toggling, and profile alignment.
 
 ## License
 
