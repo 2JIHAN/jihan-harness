@@ -7,7 +7,7 @@ description: Automates the Aside AI browser by exchanging chat turns. Use when w
 
 Aside is an AI browser with an embedded intelligent agent. This skill automates web tasks by **sending natural language instructions one turn at a time and receiving responses**.
 
-The code lives in the `scripts/` directory of this skill. The upstream repository is `https://github.com/2JIHAN/delegate-to-aside`.
+The code lives in the `scripts/` directory of this skill. The upstream repository is `https://github.com/2JIHAN/jihan-workflow`.
 
 ## When to Use
 

@@ -18,13 +18,13 @@ Install into the current project directory or globally across your machine using
 
 ```bash
 # Interactive selection (choose from available skills)
-npx skills add 2JIHAN/delegate-to-aside
+npx skills add 2JIHAN/jihan-workflow
 
 # Install specific skill directly
-npx skills add 2JIHAN/delegate-to-aside --skill delegate-to-aside
+npx skills add 2JIHAN/jihan-workflow --skill delegate-to-aside
 
 # Install globally (shared across Antigravity, Claude Code, Cursor, etc.)
-npx skills add 2JIHAN/delegate-to-aside --skill delegate-to-aside -g
+npx skills add 2JIHAN/jihan-workflow --skill delegate-to-aside -g
 ```
 
 ## Quick Start (`delegate-to-aside`)
