@@ -1,5 +1,5 @@
 ---
-name: aside-browser
+name: delegate-to-aside
 description: Aside 브라우저를 채팅 세션의 턴을 주고받는 방식으로 자동화합니다. 로그인된 계정으로 웹 작업을 시켜야 할 때, 진행 상황을 사용자가 GUI에서 실시간으로 보아야 할 때 사용합니다.
 ---
 
@@ -7,7 +7,7 @@ description: Aside 브라우저를 채팅 세션의 턴을 주고받는 방식�
 
 Aside는 브라우저 안에 에이전트가 들어 있는 AI 브라우저입니다. 이 스킬은 그 에이전트에게 **자연어로 지시를 한 턴씩 보내고 응답을 받는** 방식을 다룹니다.
 
-코드는 이 스킬 폴더의 `scripts/`에 있습니다. 원본 저장소는 `~/aside-browser`이며, 고칠 때는 그곳에서 고친 뒤 `install.sh`로 각 프로젝트에 재배포합니다.
+코드는 이 스킬 폴더의 `scripts/`에 있습니다. 원본 저장소는 `https://github.com/2JIHAN/delegate-to-aside` 이며, 고칠 때는 그곳에서 고친 뒤 재배포합니다.
 
 ## 언제 쓰는가
 
@@ -125,8 +125,8 @@ aside exec -p antigravity -m claude-sonnet-4-6 "지시"
 
 | 파일 | 하는 일 |
 | --- | --- |
-| `lib.mjs` | exec 호출, 사용량 제한 시 폴백, 프록시 모델 조회와 선택 |
-| `00-check-model.mjs` | 기본 모델과 프록시 상태 점검 |
+| `lib.mjs` | exec 호출, 세션 보관, 시각 UI 모사 공통 함수 |
+| `00-check-model.mjs` | 기본 모델 및 프로바이더 연결 상태 점검 |
 | `00-sync-aside-rules.mjs` | 모든 계정의 `AGENTS.md`/`MEMORY.md`에 시각 우선 원칙 각인 |
 | `01-ensure-window.mjs` | 앱 실행 확인, 없으면 실행, 탭 목록 |
 | `02-open-session.mjs` | 세션 생성, ephemeral flip, 세션 ID 저장 |
@@ -143,7 +143,7 @@ aside exec -p antigravity -m claude-sonnet-4-6 "지시"
 | --- | --- |
 | `Session not found` | 날짜 접두사를 뗐는지 확인합니다. |
 | 탭 목록이 비어 있음 | 프로필이 다릅니다. 해당 프로필로 앱을 띄웁니다. |
-| `exceeded rate limit` | 일시적입니다. `lib.mjs`가 자동으로 다른 모델로 재시도합니다. |
+| `exceeded rate limit` | 일시적입니다. 프로바이더/프록시 레벨에서 자동 폴백 처리되거나 잠시 뒤 재시도합니다. |
 | `not available for this account` | 모델만 넘겼습니다. `-p`를 함께 넘깁니다. |
 | 앱 Chats에 안 보임 | flip이 안 됐습니다. `state.db`에서 `ephemeral` 값을 확인합니다. |
 | 여러 단계 지시가 중간에 죽음 | 지시를 단계별로 쪼갭니다. |

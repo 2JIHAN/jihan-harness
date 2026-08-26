@@ -149,58 +149,6 @@ export function providerBaseUrl(account, key) {
   return p?.baseUrl || null;
 }
 
-// 프로바이더가 지금 실제로 서빙 중인 모델 목록입니다. 주소도 설정에서 읽습니다.
-export async function liveModels(account, key) {
-  const base = providerBaseUrl(account, key);
-  if (!base) return [];
-  try {
-    const res = await fetch(`${base}/v1/models`, { signal: AbortSignal.timeout(5000) });
-    if (!res.ok) return [];
-    return ((await res.json()).data || []).map((m) => m.id);
-  } catch {
-    return [];
-  }
-}
-
-// 모델 이름을 계열과 버전으로 나눕니다.
-//   gemini-3.7-flash-high   → { family: 'gemini', version: 3.7 }
-//   claude-opus-4-6-thinking → { family: 'claude', version: 4.6 }
-//   gpt-oss-120b-medium      → { family: 'gpt',   version: NaN }
-export function parseModelId(id) {
-  const parts = id.split('-');
-  const nums = parts.filter((t) => /^\d+(\.\d+)?$/.test(t));
-  const version = nums.length ? Number(nums.join('.').split('.').slice(0, 2).join('.')) : NaN;
-  return { family: parts[0], version };
-}
-
-// 쓸 만한 모델을 고릅니다. 이름을 고정하지 않습니다.
-//
-// 버전 비교는 반드시 같은 계열 안에서만 합니다. claude 4.6 과 gemini 3.7 은
-// 비교 대상이 아니므로, 계열을 섞어 정렬하면 엉뚱한 모델이 뽑힙니다.
-// 기준 계열은 그 계정의 현재 기본 모델에서 가져옵니다.
-export async function pickModel(account, key, exclude = []) {
-  const ids = (await liveModels(account, key)).filter((id) => !exclude.includes(id));
-  if (ids.length === 0) return null;
-
-  const best = (list) => {
-    const v = list.map((id) => ({ id, ...parseModelId(id) })).filter((x) => !Number.isNaN(x.version));
-    v.sort((a, b) => b.version - a.version);
-    return v.length ? v[0].id : list[0];
-  };
-
-  const wanted = parseModelId(defaultModel(account).modelId || '').family;
-  const same = ids.filter((id) => parseModelId(id).family === wanted && !id.includes('-image'));
-  if (same.length) return best(same);
-
-  // 같은 계열이 없으면 다른 계열로 넘어갑니다. 계열 이름순으로 정해 결과가 흔들리지 않게 합니다.
-  const others = [...new Set(ids.map((id) => parseModelId(id).family))].sort();
-  for (const f of others) {
-    const list = ids.filter((id) => parseModelId(id).family === f && !id.includes('-image'));
-    if (list.length) return best(list);
-  }
-  return ids[0];
-}
-
 // ── 이름 붙인 세션 ─────────────────────────────────────────
 export function loadSessions(account) {
   const f = storeFile(account);
@@ -232,19 +180,19 @@ export const TURN_TIMEOUT_MS = Number(process.env.ASIDE_TURN_TIMEOUT_MS || 120_0
 export function ask(account, prompt, session, { timeout = TURN_TIMEOUT_MS } = {}) {
   const base = ['exec', '--account', account];
   if (session) base.push('--session', session);
-  const run = (extra) => execFileSync('aside', [...base, ...extra, prompt], { encoding: 'utf8', timeout });
+  const run = () => execFileSync('aside', [...base, prompt], { encoding: 'utf8', timeout });
 
   const isTimeout = (e) => e.code === 'ETIMEDOUT' || e.signal === 'SIGTERM';
 
   try {
-    return run([]);
+    return run();
   } catch (e) {
     // 데몬과 확장 사이 연결이 간헐적으로 끊기면 오류가 아니라 무한 대기로 나타납니다.
     // 저절로 풀리는 성질이라 한 번만 다시 시도하고, 그래도 안 되면 사람이 알아볼 수 있게 알립니다.
     if (isTimeout(e)) {
       console.error(`${Math.round(timeout / 1000)}초 안에 응답이 없어 한 번 더 시도합니다. (연결이 일시적으로 끊긴 상태입니다)`);
       try {
-        return run([]);
+        return run();
       } catch (e2) {
         if (isTimeout(e2)) {
           throw new Error(
@@ -256,20 +204,7 @@ export function ask(account, prompt, session, { timeout = TURN_TIMEOUT_MS } = {}
       }
     }
 
-    const msg = `${e.stdout || ''}${e.stderr || ''}${e.message || ''}`;
-    if (!/rate limit/i.test(msg)) throw e;
-
-    // 폴백 모델을 이름으로 고정하지 않습니다. 지금 살아 있는 목록에서 방금 실패한 것을 빼고 고릅니다.
-    const { provider, modelId } = defaultModel(account);
-    const alt = execFileSync(process.execPath, ['-e', `
-      import('${join(import.meta.dirname, 'lib.mjs')}').then(async (m) => {
-        process.stdout.write((await m.pickModel('${account}', '${provider}', ['${modelId}'])) || '');
-      });
-    `], { encoding: 'utf8' }).trim();
-
-    if (!alt) throw e;
-    console.error(`사용량 제한에 걸려 ${provider}/${alt} 로 다시 시도합니다.`);
-    return run(['-p', provider, '-m', alt]);
+    throw e;
   }
 }
 

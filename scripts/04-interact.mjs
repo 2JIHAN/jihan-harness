@@ -38,25 +38,6 @@ if (!action) {
   process.exit(0);
 }
 
-// 인자 파싱 도우미 (계정 u0, u1, u2 등 자동 감지)
-function parseTargetAndAccount(args) {
-  let account = 'u1';
-  let session = undefined;
-  const filtered = [];
-
-  for (const a of args) {
-    if (/^u\d+$/i.test(a) && !account_set) {
-      account = a.toLowerCase();
-      var account_set = true;
-    } else {
-      filtered.push(a);
-    }
-  }
-
-  // 마지막 인자가 저장된 세션 이름일 수 있음
-  return { account, filtered };
-}
-
 async function run() {
   const act = action.toLowerCase();
 

@@ -1,14 +1,14 @@
 #!/usr/bin/env node
-// 0단계 — 모델 상태를 확인합니다.
+// 0단계 — 계정에 설정된 모델 상태와 프로바이더 통신을 확인합니다.
 //
-// 세 가지를 따로 봅니다. 서로 다를 수 있기 때문입니다.
-//   설정값        settings.json 에 적힌 것
-//   실제 쓰인 값   최근 세션 기록에 남은 것 (설정을 파일로 고치면 반영이 늦습니다)
-//   서빙 목록      프로바이더가 지금 실제로 돌리고 있는 모델
+// 확인 항목:
+//   설정값        settings.json 에 적힌 기본 모델
+//   실제 쓰인 값   최근 세션 기록에 남은 모델 (파일로 설정을 고쳤을 때의 지연 확인용)
+//   프로바이더     로컬 프록시(엔드포인트) 사용 시 연결 상태 확인
 //
 // 사용법: node 00-check-model.mjs [계정]
 
-import { defaultModel, lastUsedModel, liveModels, pickModel, providerBaseUrl } from './lib.mjs';
+import { defaultModel, lastUsedModel, providerBaseUrl } from './lib.mjs';
 
 const account = process.argv[2] || 'u1';
 const set = defaultModel(account);
@@ -25,18 +25,17 @@ if (used) {
 }
 
 const base = providerBaseUrl(account);
-if (!base) {
-  console.log(`\n프로바이더 "${set.provider}" 는 로컬 설정이 없습니다. Aside 제공 모델로 보입니다.`);
-  console.log('사용량 제한에 걸리기 쉽습니다.');
-} else {
-  const ids = await liveModels(account);
-  if (ids.length === 0) {
-    console.log(`\n프로바이더 "${set.provider}" (${base}) 가 응답하지 않습니다.`);
-    console.log('설정이 이 프로바이더를 가리키므로 실행이 실패합니다.');
-  } else {
-    console.log(`\n프로바이더 "${set.provider}" (${base}) 정상 — 모델 ${ids.length}개`);
-    if (!ids.includes(set.modelId)) {
-      console.log(`경고: 설정된 ${set.modelId} 가 목록에 없습니다. 권장: ${await pickModel(account)}`);
+if (base) {
+  try {
+    const res = await fetch(`${base}/health`, { signal: AbortSignal.timeout(3000) });
+    if (res.ok) {
+      console.log(`\n프로바이더 "${set.provider}" (${base}) 연결 정상`);
+    } else {
+      console.log(`\n프로바이더 "${set.provider}" (${base}) 응답 오류: HTTP ${res.status}`);
     }
+  } catch {
+    console.log(`\n프로바이더 "${set.provider}" (${base}) 에 연결할 수 없습니다. 로컬 서버가 켜져 있는지 확인하십시오.`);
   }
+} else {
+  console.log(`\n프로바이더 "${set.provider}" — Aside 내장 또는 클라우드 프로바이더 구성`);
 }

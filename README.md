@@ -1,4 +1,4 @@
-# aside-browser
+# delegate-to-aside
 
 Aside 브라우저의 내장 에이전트에게 **자연어 지시를 한 턴씩 보내고 응답을 받는** 방식으로 웹 작업을 자동화하는 에이전트 스킬입니다. 사용자가 로그인해 둔 계정 그대로 동작하고, 진행 과정이 GUI에 실시간으로 보입니다.
 
@@ -6,10 +6,22 @@ Aside 브라우저의 내장 에이전트에게 **자연어 지시를 한 턴씩
 
 ## 설치
 
-대상 프로젝트에 심링크로 겁니다. 원본을 고치면 설치된 모든 프로젝트에 즉시 반영됩니다.
+### 1. npx skills (권장)
+
+대상 프로젝트 폴더에서 실행하거나, `-g` 플래그로 사용자 PC 전역에 설치합니다.
 
 ```bash
-~/aside-browser/install.sh ~/내프로젝트
+# 특정 프로젝트에 설치
+npx skills add 2JIHAN/delegate-to-aside
+
+# 사용자 PC 전역(Antigravity, Claude Code 등 공용)에 설치
+npx skills add 2JIHAN/delegate-to-aside -g
+```
+
+### 2. 로컬 심링크 설치
+
+```bash
+./install.sh ~/내프로젝트
 ```
 
 `.claude/skills`, `.agents/skills`, `skills` 중 그 프로젝트에 이미 있는 폴더를 찾아 겁니다.
@@ -17,7 +29,7 @@ Aside 브라우저의 내장 에이전트에게 **자연어 지시를 한 턴씩
 ## 빠른 시작
 
 ```bash
-cd ~/aside-browser/scripts
+cd scripts
 
 node 00-check-model.mjs u1                      # 모델과 프록시 상태 확인
 node 01-ensure-window.mjs u1                    # 앱 실행 확인, 탭 목록
