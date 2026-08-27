@@ -1,29 +1,49 @@
-# Agent Skills Catalog
+# Jihan Workflow Catalog
 
-A collection of production-ready AI agent skills compatible with `npx skills`, Claude Code, Antigravity, Cursor, and other modern AI agent frameworks.
+A modular, production-ready AI engineering harness compatible with `npx skills`, Claude Code, Antigravity, Cursor, and modern AI agent workflows.
 
-## Available Skills
+## Architecture
 
-### [`delegate-to-aside`](skills/delegate-to-aside/SKILL.md)
-Automates the Aside AI browser by exchanging chat turns. Operates using the user's logged-in accounts directly, with real-time visual progress visible in the GUI.
+This repository is structured into three deterministic tiers:
 
-- **Requirements**: Node.js 18+, `aside` CLI
-- **Path**: `skills/delegate-to-aside/`
+- **`rules/`** — AI behavioral and visual formatting standards (`fluent-korean.md`, `terminal-response-format.md`)
+- **`skills/`** — On-demand capabilities and agent workflows (`delegate-to-aside/`)
+- **`hooks/`** — Git-level physical hard gates (`commit-msg/` with AI signature block and 72-char limit)
 
 ---
 
 ## Installation
 
-Install into the current project directory or globally across your machine using `-g`.
+### 1. Unified Installer (`install.sh`)
+
+Deploy all tiers or selected components into any target project:
 
 ```bash
-# Interactive selection (choose from available skills)
+# Install everything (Hooks + Rules + Skills) to current directory
+./install.sh
+
+# Install to a specific target project
+./install.sh /path/to/my-project
+
+# Selective installation
+./install.sh --hooks              # Install Git physical hooks only (.git/hooks/)
+./install.sh --rules              # Install AI rules (.agents/rules/ & AGENTS.md)
+./install.sh --skills             # Install Agent skills (.agents/skills/)
+./install.sh --link               # Symlink files instead of copying
+```
+
+### 2. Agent Skills CLI (`npx skills`)
+
+Install individual agent skills on-demand using the open `skills` standard:
+
+```bash
+# Interactive selection
 npx skills add 2JIHAN/jihan-workflow
 
 # Install specific skill directly
 npx skills add 2JIHAN/jihan-workflow --skill delegate-to-aside
 
-# Install globally (shared across Antigravity, Claude Code, Cursor, etc.)
+# Install globally across all agent frameworks
 npx skills add 2JIHAN/jihan-workflow --skill delegate-to-aside -g
 ```
 
