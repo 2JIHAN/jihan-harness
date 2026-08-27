@@ -116,39 +116,38 @@ if [ "$INSTALL_RULES" = true ]; then
     fi
   done
 
-  # Auto-wire AGENTS.md (Single Source of Truth)
-  AGENTS_FILE="$TARGET_DIR/AGENTS.md"
-  if [ ! -f "$AGENTS_FILE" ]; then
-    cat << 'EOF' > "$AGENTS_FILE"
+  # Dedicated hidden configuration folders (keeps project root clean)
+  CLAUDE_DIR="$TARGET_DIR/.claude"
+  GEMINI_DIR="$TARGET_DIR/.gemini"
+  mkdir -p "$CLAUDE_DIR" "$GEMINI_DIR"
+
+  CLAUDE_FILE="$CLAUDE_DIR/CLAUDE.md"
+  GEMINI_FILE="$GEMINI_DIR/GEMINI.md"
+  AGENTS_FILE="$TARGET_DIR/.agents/AGENTS.md"
+
+  # Initialize guide files if not present
+  for guide_file in "$CLAUDE_FILE" "$GEMINI_FILE" "$AGENTS_FILE"; do
+    if [ ! -f "$guide_file" ]; then
+      cat << 'EOF' > "$guide_file"
 # Project Guidelines
 
 This project adheres to the following workflow rules:
 EOF
-    echo "   📝 Created: AGENTS.md"
-  fi
+      echo "   📝 Created: $(echo "$guide_file" | sed "s|$TARGET_DIR/||")"
+    fi
+  done
 
-  # Auto-wire CLAUDE.md and GEMINI.md bridges
-  CLAUDE_FILE="$TARGET_DIR/CLAUDE.md"
-  if [ ! -f "$CLAUDE_FILE" ]; then
-    echo "@AGENTS.md" > "$CLAUDE_FILE"
-    echo "   🔌 Wired: CLAUDE.md -> @AGENTS.md"
-  fi
-
-  GEMINI_FILE="$TARGET_DIR/GEMINI.md"
-  if [ ! -f "$GEMINI_FILE" ]; then
-    echo "@AGENTS.md" > "$GEMINI_FILE"
-    echo "   🔌 Wired: GEMINI.md -> @AGENTS.md"
-  fi
-
-  # Append @ references if not already present
+  # Append @ references to all guide files
   for rule_file in "$SCRIPT_DIR/rules/"*.md; do
     if [ -f "$rule_file" ]; then
       base_name="$(basename "$rule_file")"
       ref_line="@.agents/rules/$base_name"
-      if ! grep -qF "$ref_line" "$AGENTS_FILE"; then
-        echo -e "\n$ref_line" >> "$AGENTS_FILE"
-        echo "   🔌 Wired '$base_name' into AGENTS.md"
-      fi
+      for guide_file in "$CLAUDE_FILE" "$GEMINI_FILE" "$AGENTS_FILE"; do
+        if ! grep -qF "$ref_line" "$guide_file"; then
+          echo -e "\n$ref_line" >> "$guide_file"
+        fi
+      done
+      echo "   🔌 Wired '$base_name' into .claude/CLAUDE.md, .gemini/GEMINI.md, and .agents/AGENTS.md"
     fi
   done
 fi

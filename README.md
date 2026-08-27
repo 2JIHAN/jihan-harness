@@ -27,7 +27,7 @@ Deploy all tiers or selected components into any target project:
 
 # Selective installation
 ./install.sh --hooks              # Install Git physical hooks only (.git/hooks/)
-./install.sh --rules              # Install AI rules (.agents/rules/ & AGENTS.md)
+./install.sh --rules              # Install AI rules (.agents/rules/ & hidden agent configs)
 ./install.sh --skills             # Install Agent skills (.agents/skills/)
 ./install.sh --link               # Symlink files instead of copying
 ```
