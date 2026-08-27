@@ -116,7 +116,7 @@ if [ "$INSTALL_RULES" = true ]; then
     fi
   done
 
-  # Auto-wire AGENTS.md
+  # Auto-wire AGENTS.md (Single Source of Truth)
   AGENTS_FILE="$TARGET_DIR/AGENTS.md"
   if [ ! -f "$AGENTS_FILE" ]; then
     cat << 'EOF' > "$AGENTS_FILE"
@@ -125,6 +125,19 @@ if [ "$INSTALL_RULES" = true ]; then
 This project adheres to the following workflow rules:
 EOF
     echo "   📝 Created: AGENTS.md"
+  fi
+
+  # Auto-wire CLAUDE.md and GEMINI.md bridges
+  CLAUDE_FILE="$TARGET_DIR/CLAUDE.md"
+  if [ ! -f "$CLAUDE_FILE" ]; then
+    echo "@AGENTS.md" > "$CLAUDE_FILE"
+    echo "   🔌 Wired: CLAUDE.md -> @AGENTS.md"
+  fi
+
+  GEMINI_FILE="$TARGET_DIR/GEMINI.md"
+  if [ ! -f "$GEMINI_FILE" ]; then
+    echo "@AGENTS.md" > "$GEMINI_FILE"
+    echo "   🔌 Wired: GEMINI.md -> @AGENTS.md"
   fi
 
   # Append @ references if not already present
@@ -160,6 +173,12 @@ if [ "$INSTALL_SKILLS" = true ]; then
       fi
     fi
   done
+
+  # Wire Claude Code native skills discovery (.claude/skills)
+  CLAUDE_DIR="$TARGET_DIR/.claude"
+  mkdir -p "$CLAUDE_DIR"
+  ln -sfn ../.agents/skills "$CLAUDE_DIR/skills"
+  echo "   🔌 Wired: .claude/skills -> ../.agents/skills"
 fi
 
 echo "──────────────────────────────────────────────"
