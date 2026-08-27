@@ -4,7 +4,7 @@
 
 ## 1. Rule (Always-on Context)
 
-- **정의** — LLM 대화 컨텍스트에 매 턴마다 상시(Always-on) 주입하는 전역 행동 규약이다.
+- **정의** — LLM 대화 컨텍스트에 매 턴마다 상시(Always-on) 주입되는 전역 행동 규약
 - **수록 기준**
   - 전역 언어 및 어조 규약 ([`fluent-korean.md`](../rules/fluent-korean.md))
   - 출력 레이아웃 및 서식 표준 ([`terminal-response-format.md`](../rules/terminal-response-format.md))
@@ -21,7 +21,7 @@
 
 ## 2. Skill (On-demand Progressive Disclosure)
 
-- **정의** — 평소에는 이름과 설명 메타데이터(약 20~30 토큰)만 유지하다가, 관련 작업을 수행할 때만 본문 전체를 동적으로 불러오는 온디맨드 실행 패키지이다.
+- **정의** — 평소에는 이름과 설명 메타데이터(약 20~30 토큰)만 유지하다가, 관련 작업 수행 시에만 본문 전체를 동적으로 불러오는 온디맨드 패키지
 - **수록 기준**
   - 도구 연동 및 브라우저 제어 절차 ([`delegate-to-aside/`](../skills/delegate-to-aside/))
   - 조건부 작업 규약 ([`writing-docs/`](../skills/writing-docs/))
@@ -36,7 +36,7 @@
 
 ## 3. Hook (Deterministic Physical Gate)
 
-- **정의** — LLM 컨텍스트를 전혀 소모하지 않고(0 토큰), OS 및 Git 런타임 환경에서 시스템 수준으로 강제하는 결정론적 검증기이다.
+- **정의** — LLM 컨텍스트를 소모하지 않고(0 토큰), OS 및 Git 런타임 환경에서 시스템 수준으로 강제하는 결정론적 검증기
 - **수록 기준**
   - 커밋 메시지 규격 검증 (Conventional Commits, 72자 제한) ([`hooks/commit-msg/`](../hooks/commit-msg/))
   - AI 워터마크 및 서명 차단 (`🤖 Generated with`, `Co-Authored-By` 등)
