@@ -38,7 +38,6 @@ Visual layout and formatting standards for presenting outputs in terminal and ch
 
 ## 3. Strictly Prohibited Elements
 
-The following elements degrade terminal readability and consume unnecessary buffer space:
 - **No Horizontal Dividers**: Do not use horizontal rules (`---`) or ascii lines.
 - **No Markdown Heading Hashes**: Do not use `#`, `##`, or `###` in conversational turns; use `**▍Header**` instead.
 - **No Full-Response Blockquotes**: Do not wrap entire response bodies in blockquote blocks (`>`).

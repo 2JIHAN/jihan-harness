@@ -1,6 +1,6 @@
 # commit-msg Hook
 
-A deterministic Git hook that enforces Conventional Commits, restricts the summary line to 72 characters, and completely blocks AI signatures and generated trailers.
+A deterministic Git hook that enforces Conventional Commits, restricts the summary line to 72 characters, and blocks AI signatures and generated trailers.
 
 ## Features
 
@@ -28,11 +28,4 @@ mkdir -p ~/.git-hooks
 cp hooks/commit-msg/commit-msg ~/.git-hooks/
 chmod +x ~/.git-hooks/commit-msg
 git config --global core.hooksPath ~/.git-hooks
-```
-
-## Emergency Bypass
-
-If you ever need to bypass this check for an urgent emergency commit:
-```bash
-git commit --no-verify -m "emergency fix"
 ```

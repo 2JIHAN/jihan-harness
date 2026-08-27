@@ -1,6 +1,6 @@
 # Jihan Workflow Catalog
 
-A modular, production-ready AI engineering harness compatible with `npx skills`, Claude Code, Antigravity, Cursor, and modern AI agent workflows.
+A modular AI engineering harness compatible with `npx skills`, Claude Code, Antigravity, Cursor, and modern AI agent workflows.
 
 ## Architecture
 
@@ -16,7 +16,7 @@ This repository is governed by the **3 Pillars** (Rule, Skill, Hook) and **3 Inv
 Automates the Aside AI browser by exchanging chat turns. Operates using the user's logged-in accounts directly, with real-time visual progress visible in the GUI.
 
 ### 2. [`writing-docs`](skills/writing-docs/SKILL.md)
-Universal engineering standards for documentation. Enforces strict scope discipline, eliminates introductory fluff and tombstone records, focuses on high-density big flows, and clearly bifurcates human-facing vs model-facing writing.
+Universal engineering standards for documentation. Enforces strict scope discipline, eliminates introductory fluff and tombstone records, focuses on high-density big flows, and clearly separates human-facing vs model-facing writing.
 
 ---
 
@@ -72,10 +72,6 @@ Recommended initial setup: inject vision-first interaction principles into all A
 ```bash
 node 00-sync-aside-rules.mjs
 ```
-
-## Documentation
-
-- [skills/delegate-to-aside/SKILL.md](skills/delegate-to-aside/SKILL.md) — Operational guidelines for agents. Contains empirically verified patterns including session ID formatting, ephemeral flag toggling, and profile alignment.
 
 ## License
 
