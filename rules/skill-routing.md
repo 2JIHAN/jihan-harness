@@ -42,3 +42,14 @@ Always-on dispatch rules. You MUST load and strictly adhere to the designated sk
 - **Directives**:
   - Execute turn exchanges asynchronously or via subagents outside the main session turn.
   - Follow vision-first UI interaction (clicking and typing based on layout, not dumping huge DOM trees).
+
+## 5. Reviewing or Auditing Code for Over-Engineering
+
+- **Mandatory Skills**:
+  - Reviewing diffs or PRs: `.agents/skills/ponytail-review/SKILL.md`
+  - Repo-wide complexity audit: `.agents/skills/ponytail-audit/SKILL.md`
+  - Harvesting shortcut debt: `.agents/skills/ponytail-debt/SKILL.md`
+- **When**: Reviewing for complexity, auditing repository for bloat, or tracking deferred shortcuts.
+- **Directives**:
+  - Use tagged output (`delete:`, `stdlib:`, `native:`, `yagni:`, `shrink:`).
+  - One line per finding, concluding with `net: -N lines possible` (or `Lean already. Ship.`).

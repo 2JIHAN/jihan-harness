@@ -38,6 +38,9 @@ jihan-harness/
 ├── skills/                                   # [기둥 2] 온디맨드 스킬
 │   ├── delegate-to-aside/                    # Aside 브라우저 자동화
 │   ├── ponytail/                             # 미니멀 코딩 및 YAGNI 원칙
+│   ├── ponytail-audit/                       # 전수 과잉 엔지니어링 감사
+│   ├── ponytail-debt/                        # 지름길 부채 장부 수확
+│   ├── ponytail-review/                      # diff 복잡성 사냥 리뷰
 │   ├── systematic-debugging/                 # 원인 규명 우선 디버깅
 │   ├── writing-docs/                         # 영문 문서 작성 규약
 │   └── writing-docs-in-korean/               # 한국어 문서 작성 규약
