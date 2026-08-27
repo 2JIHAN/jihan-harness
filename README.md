@@ -1,4 +1,4 @@
-# Jihan Workflow Catalog
+# Jihan Harness Catalog
 
 A modular AI engineering harness compatible with `npx skills`, Claude Code, Antigravity, Cursor, and modern AI agent workflows.
 
@@ -49,13 +49,13 @@ Install individual agent skills on-demand using the open `skills` standard:
 
 ```bash
 # Interactive selection
-npx skills add 2JIHAN/jihan-workflow
+npx skills add 2JIHAN/jihan-harness
 
 # Install specific skill directly
-npx skills add 2JIHAN/jihan-workflow --skill delegate-to-aside
+npx skills add 2JIHAN/jihan-harness --skill delegate-to-aside
 
 # Install globally across all agent frameworks
-npx skills add 2JIHAN/jihan-workflow --skill delegate-to-aside -g
+npx skills add 2JIHAN/jihan-harness --skill delegate-to-aside -g
 ```
 
 ## Quick Start (`delegate-to-aside`)

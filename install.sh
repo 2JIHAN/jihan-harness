@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# install.sh — Unified installer for jihan-workflow (Hooks, Rules, Skills)
+# install.sh — Unified installer for jihan-harness (Hooks, Rules, Skills)
 #
 # Usage:
 #   ./install.sh [options] [target_path]
@@ -80,7 +80,7 @@ fi
 mkdir -p "$TARGET_DIR"
 TARGET_DIR="$(cd "$TARGET_DIR" && pwd)"
 
-echo "🚀 [jihan-workflow] Installing to: $TARGET_DIR"
+echo "🚀 [jihan-harness] Installing to: $TARGET_DIR"
 echo "──────────────────────────────────────────────"
 
 # 2. Install Hooks
@@ -188,4 +188,4 @@ if [ "$INSTALL_SKILLS" = true ]; then
 fi
 
 echo "──────────────────────────────────────────────"
-echo "✨ [jihan-workflow] Installation completed successfully!"
+echo "✨ [jihan-harness] Installation completed successfully!"

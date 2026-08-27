@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# hooks/install.sh — Master installer for all hooks in jihan-workflow
+# hooks/install.sh — Master installer for all hooks in jihan-harness
 set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
