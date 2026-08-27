@@ -4,7 +4,7 @@ A modular, production-ready AI engineering harness compatible with `npx skills`,
 
 ## Architecture
 
-This repository is structured into three deterministic tiers:
+This repository is governed by the **3 Pillars** (Rule, Skill, Hook) and **3 Invariants** (Idempotency, Auto-wiring, Zero-dependency). See [Harness Architecture Documentation](docs/index.md) for the complete engineering specification.
 
 - **`rules/`** — AI behavioral and visual formatting standards (`fluent-korean.md`, `terminal-response-format.md`)
 - **`skills/`** — On-demand capabilities and agent workflows (`delegate-to-aside/`, `writing-docs/`)
