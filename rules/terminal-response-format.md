@@ -1,46 +1,46 @@
 ---
 name: terminal-response-format
-description: 터미널 및 대화 환경의 시각적 레이아웃 서식 표준입니다.
+description: Pure visual formatting standard for terminal and conversation outputs.
 ---
 
-# 터미널 답변 서식 (terminal-response-format.md)
+# Terminal Response Formatting (terminal-response-format.md)
 
-이 문서는 터미널 및 대화 환경에서 유저에게 출력하는 **시각적 레이아웃 서식의 단일 진실 공급원(SSOT)**입니다. 문체 및 한국어 문장 규칙은 [`fluent-korean`](./fluent-korean.md)을 따릅니다.
+This document is the Single Source of Truth (SSOT) for **visual layout and formatting** when presenting outputs in terminal and chat environments. It defines visual structure only and is completely language-agnostic and self-contained.
 
-## 1. 핵심 원칙
+## 1. Core Principles
 
-- **핵심 정보 누락 금지 (Zero Omission)**: 사족은 걷어내되 필수 맥락, 핵심 사실, 결정 사항은 절대 빠뜨리지 않습니다.
-- **표(Table) 사용 기준**: 대상이 둘 이상이고 동일 잣대로 비교할 때만 표를 사용합니다 (비교, 채점표, 전후 대비 등). 단일 대상에 대한 설명은 목록으로 작성합니다.
+- **Zero Omission**: Eliminate conversational filler, but never omit critical context, essential facts, or decision outcomes.
+- **Table Usage Criteria**: Use tables only when comparing two or more items against the same criteria (comparisons, scorecards, before/after diffs). Describe single items using bullet lists.
 
 ---
 
-## 2. 레이아웃 규약
+## 2. Layout Standards
 
-- **섹션 제목**: `**▍제목**` (굵은 글씨 앞에 세로 막대 기호 `▍` 1개, 공백 없이 명사형 종결)
-- **목록 항목**: `- **항목 머리** — 설명` (볼드는 제목과 항목 머리에만 사용하며, 엠대시 `—`는 머리 뒤 1회만 사용)
-- **파일 경로**: 클릭 가능한 마크다운 링크로 작성 (`[파일명](file:///절대경로)`). 명령어, 변수, 설정 키, 코드는 인라인 백틱(``)으로 감쌉니다.
-- **답변 마무리**: 답변 끝에는 사용자가 다음에 취할 행동을 권장하거나 작업 완결 상태를 맺는 문장을 배치합니다.
+- **Section Headers**: `**▍Header**` (Prefix with a single vertical bar `▍` in bold, no space between the bar and header, ending with a noun phrase).
+- **List Items**: `- **Item Title** — Description` (Bold is restricted to the section header and item title; use an em-dash `—` only once immediately after the bold title).
+- **File Paths & Code**: Format file paths as clickable Markdown links (`[filename](file:///absolute/path)`). Wrap commands, variables, configuration keys, and code snippets in inline backticks (``).
+- **Closing**: Conclude responses with a clear completion statement or a recommended next action.
 
-### 출력 예시
+### Output Example
 ```markdown
-**▍작업 결과**
+**▍Execution Results**
 
-- **DB 마이그레이션 적용** — `0021`부터 `0028`까지 8개 스크립트 실행 완료
-  - 적용 전 드라이런으로 삭제 대상 확인 완료. 데이터 유실 없음
-- **설정 파일 갱신** — `config.json` 포트 번호 변경 완료
+- **Database Migrations** — Executed 8 migration scripts (`0021` through `0028`)
+  - Pre-run dry run verified zero data loss
+- **Configuration Update** — Updated port settings in `config.json`
 
-**▍다음 행동 권장**
+**▍Recommended Next Action**
 
-- 추가 검증이 필요한 항목이 있으면 말씀해 주세요.
+- Let me know if you would like to proceed with integration testing.
 ```
 
 ---
 
-## 3. 금지 서식 (Strictly Prohibited)
+## 3. Strictly Prohibited Elements
 
-다음 서식은 가독성을 저해하고 터미널 버퍼를 낭비하므로 사용을 엄격히 금지합니다:
-- **구분선 금지**: 수평선(`---`) 및 기호로 그린 실선
-- **해시 헤더 금지**: 마크다운 헤더 기호(`##`, `###`) 사용 금지 (`**▍제목**` 사용)
-- **전체 인용 금지**: 인용 블록(`>`)으로 본문 전체 감싸기 금지
-- **공백 낭비 금지**: 빈 줄을 2줄 이상 연속으로 배치하는 행위
-- **이모지 남발 금지**: 맥락 없는 감정 표현용 이모지 배치 자제
+The following elements degrade terminal readability and consume unnecessary buffer space:
+- **No Horizontal Dividers**: Do not use horizontal rules (`---`) or ascii lines.
+- **No Markdown Heading Hashes**: Do not use `#`, `##`, or `###` in conversational turns; use `**▍Header**` instead.
+- **No Full-Response Blockquotes**: Do not wrap entire response bodies in blockquote blocks (`>`).
+- **No Consecutive Empty Lines**: Never place two or more blank lines consecutively.
+- **No Excessive Emojis**: Avoid filler or decorative emojis.
