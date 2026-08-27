@@ -116,40 +116,49 @@ if [ "$INSTALL_RULES" = true ]; then
     fi
   done
 
-  # Dedicated hidden configuration folders (keeps project root clean)
+  # 1) .agents/AGENTS.md as the Single Source of Truth (SSOT)
+  AGENTS_FILE="$TARGET_DIR/.agents/AGENTS.md"
+  if [ ! -f "$AGENTS_FILE" ]; then
+    cat << 'EOF' > "$AGENTS_FILE"
+# Project Guidelines (Single Source of Truth)
+
+This project adheres to the following workflow rules:
+EOF
+    echo "   📝 Created: .agents/AGENTS.md (SSOT)"
+  fi
+
+  # Append @ references into .agents/AGENTS.md (relative path to rules/)
+  for rule_file in "$SCRIPT_DIR/rules/"*.md; do
+    if [ -f "$rule_file" ]; then
+      base_name="$(basename "$rule_file")"
+      ref_line="@rules/$base_name"
+      if ! grep -qF "$ref_line" "$AGENTS_FILE"; then
+        echo -e "\n$ref_line" >> "$AGENTS_FILE"
+        echo "   🔌 Wired '$base_name' into .agents/AGENTS.md"
+      fi
+    fi
+  done
+
+  # 2) Wire .claude/CLAUDE.md and .gemini/GEMINI.md bridges via relative path
   CLAUDE_DIR="$TARGET_DIR/.claude"
   GEMINI_DIR="$TARGET_DIR/.gemini"
   mkdir -p "$CLAUDE_DIR" "$GEMINI_DIR"
 
   CLAUDE_FILE="$CLAUDE_DIR/CLAUDE.md"
-  GEMINI_FILE="$GEMINI_DIR/GEMINI.md"
-  AGENTS_FILE="$TARGET_DIR/.agents/AGENTS.md"
-
-  # Initialize guide files if not present
-  for guide_file in "$CLAUDE_FILE" "$GEMINI_FILE" "$AGENTS_FILE"; do
-    if [ ! -f "$guide_file" ]; then
-      cat << 'EOF' > "$guide_file"
-# Project Guidelines
-
-This project adheres to the following workflow rules:
+  if [ ! -f "$CLAUDE_FILE" ]; then
+    cat << 'EOF' > "$CLAUDE_FILE"
+@../.agents/AGENTS.md
 EOF
-      echo "   📝 Created: $(echo "$guide_file" | sed "s|$TARGET_DIR/||")"
-    fi
-  done
+    echo "   🔌 Wired: .claude/CLAUDE.md -> @../.agents/AGENTS.md"
+  fi
 
-  # Append @ references to all guide files
-  for rule_file in "$SCRIPT_DIR/rules/"*.md; do
-    if [ -f "$rule_file" ]; then
-      base_name="$(basename "$rule_file")"
-      ref_line="@.agents/rules/$base_name"
-      for guide_file in "$CLAUDE_FILE" "$GEMINI_FILE" "$AGENTS_FILE"; do
-        if ! grep -qF "$ref_line" "$guide_file"; then
-          echo -e "\n$ref_line" >> "$guide_file"
-        fi
-      done
-      echo "   🔌 Wired '$base_name' into .claude/CLAUDE.md, .gemini/GEMINI.md, and .agents/AGENTS.md"
-    fi
-  done
+  GEMINI_FILE="$GEMINI_DIR/GEMINI.md"
+  if [ ! -f "$GEMINI_FILE" ]; then
+    cat << 'EOF' > "$GEMINI_FILE"
+@../.agents/AGENTS.md
+EOF
+    echo "   🔌 Wired: .gemini/GEMINI.md -> @../.agents/AGENTS.md"
+  fi
 fi
 
 # 4. Install Skills
