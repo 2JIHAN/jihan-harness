@@ -18,5 +18,6 @@ HOOKS_DIR="$GIT_DIR/hooks"
 mkdir -p "$HOOKS_DIR"
 cp "$HOOK_SRC" "$HOOKS_DIR/commit-msg"
 chmod +x "$HOOKS_DIR/commit-msg"
+git -C "$TARGET_DIR" config core.hooksPath .git/hooks
 
 echo "✅ Installed commit-msg hook to $HOOKS_DIR/commit-msg"
