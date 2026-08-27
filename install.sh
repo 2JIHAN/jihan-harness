@@ -116,15 +116,15 @@ if [ "$INSTALL_RULES" = true ]; then
     fi
   done
 
-  # 1) .agents/AGENTS.md as the Single Source of Truth (SSOT)
+  # 1) .agents/AGENTS.md
   AGENTS_FILE="$TARGET_DIR/.agents/AGENTS.md"
   if [ ! -f "$AGENTS_FILE" ]; then
     cat << 'EOF' > "$AGENTS_FILE"
-# Project Guidelines (Single Source of Truth)
+# Project Guidelines
 
 This project adheres to the following workflow rules:
 EOF
-    echo "   📝 Created: .agents/AGENTS.md (SSOT)"
+    echo "   📝 Created: .agents/AGENTS.md"
   fi
 
   # Append @ references into .agents/AGENTS.md (relative path to rules/)
