@@ -7,7 +7,7 @@ A modular AI engineering harness compatible with `npx skills`, Claude Code, Anti
 This repository is governed by the **3 Pillars** (Rule, Skill, Hook) and **3 Invariants** (Idempotency, Auto-wiring, Zero-dependency). See [Harness Architecture Documentation](docs/index.md) for the complete engineering specification.
 
 - **`rules/`** — AI behavioral and visual formatting standards (`fluent-korean.md`, `terminal-response-format.md`)
-- **`skills/`** — On-demand capabilities and agent workflows (`delegate-to-aside/`, `writing-docs/`)
+- **`skills/`** — On-demand capabilities and agent workflows (`delegate-to-aside/`, `writing-docs/`, `writing-docs-in-korean/`)
 - **`hooks/`** — Git-level physical hard gates (`commit-msg/` with AI signature block and 72-char limit)
 
 ## Available Skills
@@ -17,6 +17,9 @@ Automates the Aside AI browser by exchanging chat turns. Operates using the user
 
 ### 2. [`writing-docs`](skills/writing-docs/SKILL.md)
 Universal engineering standards for documentation. Enforces strict scope discipline, eliminates introductory fluff and tombstone records, focuses on high-density big flows, and clearly separates human-facing vs model-facing writing.
+
+### 3. [`writing-docs-in-korean`](skills/writing-docs-in-korean/SKILL.md)
+Korean-specific documentation standards. Combines scope discipline and tombstone elimination with natural Korean technical style: clean nominal endings for structured definitions, omission of artificial symmetric pairs, and high-density factual narratives.
 
 ---
 

@@ -35,7 +35,8 @@ jihan-workflow/
 │   └── terminal-response-format.md           # 터미널 응답 서식 규격
 ├── skills/                                   # [기둥 2] 온디맨드 스킬
 │   ├── delegate-to-aside/                    # Aside 브라우저 자동화
-│   └── writing-docs/                         # 문서 작성 범위 규율 및 사족 배제
+│   ├── writing-docs/                         # 영문 문서 작성 규약
+│   └── writing-docs-in-korean/               # 한국어 문서 작성 규약
 ├── hooks/                                    # [기둥 3] 물리 하드 게이트
 │   ├── commit-msg/                           # Conventional Commits + AI 서명 차단
 │   └── install.sh                            # 훅 전용 설치기
