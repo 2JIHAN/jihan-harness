@@ -7,8 +7,16 @@ A modular, production-ready AI engineering harness compatible with `npx skills`,
 This repository is structured into three deterministic tiers:
 
 - **`rules/`** — AI behavioral and visual formatting standards (`fluent-korean.md`, `terminal-response-format.md`)
-- **`skills/`** — On-demand capabilities and agent workflows (`delegate-to-aside/`)
+- **`skills/`** — On-demand capabilities and agent workflows (`delegate-to-aside/`, `writing-docs/`)
 - **`hooks/`** — Git-level physical hard gates (`commit-msg/` with AI signature block and 72-char limit)
+
+## Available Skills
+
+### 1. [`delegate-to-aside`](skills/delegate-to-aside/SKILL.md)
+Automates the Aside AI browser by exchanging chat turns. Operates using the user's logged-in accounts directly, with real-time visual progress visible in the GUI.
+
+### 2. [`writing-docs`](skills/writing-docs/SKILL.md)
+Universal engineering standards for documentation. Enforces strict scope discipline, eliminates introductory fluff and tombstone records, focuses on high-density big flows, and clearly bifurcates human-facing vs model-facing writing.
 
 ---
 
