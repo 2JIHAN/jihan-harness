@@ -8,7 +8,7 @@ This repository is governed by the **3 Pillars** (Rule, Skill, Hook) and **3 Inv
 
 - **`rules/`** — AI behavioral, routing, and visual standards (`fluent-korean.md`, `skill-routing.md`, `task-execution-protocol.md`, `terminal-response-format.md`)
 - **`skills/`** — On-demand capabilities and agent workflows (`delegate-to-aside/`, `ponytail/`, `ponytail-audit/`, `ponytail-debt/`, `ponytail-review/`, `systematic-debugging/`, `writing-docs/`, `writing-docs-in-korean/`)
-- **`hooks/`** — Git-level physical hard gates (`commit-msg/` with AI signature block and 72-char limit)
+- **`hooks/`** — Git-level physical hard gates (`commit-msg/` for Conventional Commits & AI signature blocking, `pre-commit/` for config protection & secret guarding)
 
 ## Available Skills
 
@@ -35,6 +35,14 @@ Universal engineering standards for documentation. Enforces strict scope discipl
 
 ### 8. [`writing-docs-in-korean`](skills/writing-docs-in-korean/SKILL.md)
 Korean-specific documentation standards. Combines scope discipline and tombstone elimination with natural Korean technical style: clean nominal endings for structured definitions, omission of artificial symmetric pairs, and high-density factual narratives.
+
+## Available Hooks
+
+### 1. [`commit-msg`](hooks/commit-msg/README.md)
+Deterministic commit message validation. Enforces Conventional Commits, restricts summary lines to 72 characters, and completely blocks AI signatures (`🤖`, `Co-Authored-By`, `Generated with`).
+
+### 2. [`pre-commit`](hooks/pre-commit/README.md)
+Deterministic pre-commit guard. Blocks AI agents from weakening linter/formatter configurations (`eslint.config.*`, `.prettierrc*`, `biome.json`, `ruff.toml`) and prevents staging secret files (`.env`, `*.pem`, `*.key`).
 
 ---
 

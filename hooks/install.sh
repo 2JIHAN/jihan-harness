@@ -11,4 +11,8 @@ if [ -f "$SCRIPT_DIR/commit-msg/install.sh" ]; then
   bash "$SCRIPT_DIR/commit-msg/install.sh" "$TARGET_DIR"
 fi
 
+if [ -f "$SCRIPT_DIR/pre-commit/install.sh" ]; then
+  bash "$SCRIPT_DIR/pre-commit/install.sh" "$TARGET_DIR"
+fi
+
 echo "✨ All hooks installed successfully."

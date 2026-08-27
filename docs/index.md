@@ -46,6 +46,7 @@ jihan-harness/
 │   └── writing-docs-in-korean/               # 한국어 문서 작성 규약
 ├── hooks/                                    # [기둥 3] 물리 하드 게이트
 │   ├── commit-msg/                           # Conventional Commits + AI 서명 차단
+│   ├── pre-commit/                           # 린터 설정 약화 및 시크릿 유출 차단
 │   └── install.sh                            # 훅 전용 설치기
 ├── install.sh                                # 통합 배포 스크립트
 └── README.md                                 # 카탈로그 루트 문서

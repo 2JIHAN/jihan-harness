@@ -1,0 +1,93 @@
+#!/usr/bin/env bash
+# hooks/pre-commit — Deterministic pre-commit gate for jihan-harness
+# Enforces:
+# 1. Config Protection (Blocks weakening of linter/formatter configs)
+# 2. Secret Guard (Blocks staging of .env and private credentials)
+set -euo pipefail
+
+# 1. Protected linter/formatter configuration files
+PROTECTED_CONFIGS=(
+  "eslint.config.js"
+  "eslint.config.mjs"
+  "eslint.config.cjs"
+  "eslint.config.ts"
+  ".eslintrc"
+  ".eslintrc.js"
+  ".eslintrc.cjs"
+  ".eslintrc.json"
+  ".eslintrc.yml"
+  ".eslintrc.yaml"
+  ".prettierrc"
+  ".prettierrc.js"
+  ".prettierrc.cjs"
+  ".prettierrc.json"
+  ".prettierrc.yml"
+  ".prettierrc.yaml"
+  "prettier.config.js"
+  "prettier.config.cjs"
+  "prettier.config.mjs"
+  "biome.json"
+  "biome.jsonc"
+  ".ruff.toml"
+  "ruff.toml"
+  ".shellcheckrc"
+  ".stylelintrc"
+  ".stylelintrc.json"
+  ".markdownlint.json"
+  ".markdownlint.yaml"
+  ".markdownlintrc"
+)
+
+# 2. Secret patterns that must never be committed
+SECRET_PATTERNS=(
+  "^\.env$"
+  "^\.env\..*$"
+  ".*\.pem$"
+  ".*\.key$"
+  ".*id_rsa$"
+  ".*id_ed25519$"
+)
+
+# Check if there is an existing commit to diff against
+if git rev-parse --verify HEAD >/dev/null 2>&1; then
+  AGAINST="HEAD"
+else
+  AGAINST="$(git hash-object -t tree /dev/null)"
+fi
+
+FAILED=0
+
+# Iterate through staged changes (status and path)
+while IFS=$'\t' read -r status filepath extra; do
+  [ -z "$filepath" ] && continue
+  
+  filename="$(basename "$filepath")"
+
+  # A. Secret Guard Check
+  for secret_pat in "${SECRET_PATTERNS[@]}"; do
+    if [[ "$filename" =~ $secret_pat ]]; then
+      echo "❌ [Secret Guard] Staging secret file '$filepath' is strictly blocked."
+      echo "   Secrets and credentials must never be committed to version control."
+      echo "   Add '$filepath' to .gitignore and unstage: git reset HEAD '$filepath'"
+      FAILED=1
+    fi
+  done
+
+  # B. Config Protection Check
+  # Allow first-time creation (status 'A'); block modifications (status 'M') or deletions ('D')
+  if [ "$status" != "A" ]; then
+    for cfg in "${PROTECTED_CONFIGS[@]}"; do
+      if [ "$filename" = "$cfg" ]; then
+        echo "❌ [Config Protection] Modifying linter/formatter config '$filepath' is blocked."
+        echo "   Fix the source code to satisfy rules instead of weakening the configuration."
+        FAILED=1
+      fi
+    done
+  fi
+done < <(git diff --cached --name-status "$AGAINST")
+
+if [ "$FAILED" -ne 0 ]; then
+  exit 1
+fi
+
+exit 0
