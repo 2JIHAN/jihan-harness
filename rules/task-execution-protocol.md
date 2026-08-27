@@ -1,9 +1,9 @@
 ---
-name: execution-discipline
+name: task-execution-protocol
 description: Universal operational constraints for AI agents. Enforces no busy-polling, zero-blind verification, single-line progress cadence, and non-blocking execution.
 ---
 
-# Execution Discipline (execution-discipline.md)
+# Task Execution Protocol (task-execution-protocol.md)
 
 Universal operational discipline for executing commands, verifying tasks, and reporting progress.
 

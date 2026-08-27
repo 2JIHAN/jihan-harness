@@ -31,9 +31,9 @@ jihan-harness/
 │   ├── three-pillars.md                      # Rule, Skill, Hook 세부 명세
 │   └── invariants.md                         # 멱등성, 자동 배선, 무의존성 명세
 ├── rules/                                    # [기둥 1] 상시 적용 규칙
-│   ├── execution-discipline.md               # 실행 규율 (Busy-polling 차단 및 실측 검증)
 │   ├── fluent-korean.md                      # 한국어 표현 규약
 │   ├── skill-routing.md                      # 작업 맥락별 스킬 라우팅 테이블
+│   ├── task-execution-protocol.md            # 태스크 실행 프로토콜 (폴링 차단 및 실측 검증)
 │   └── terminal-response-format.md           # 터미널 응답 서식 규격
 ├── skills/                                   # [기둥 2] 온디맨드 스킬
 │   ├── delegate-to-aside/                    # Aside 브라우저 자동화
