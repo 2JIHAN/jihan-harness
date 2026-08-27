@@ -1,6 +1,6 @@
 ---
 name: execution-discipline
-description: Universal operational constraints for AI agents. Enforces no busy-polling, zero-blind verification, single-line progress cadence, non-blocking execution, and mandatory skill triggers for coding (ponytail) and debugging (systematic-debugging).
+description: Universal operational constraints for AI agents. Enforces no busy-polling, zero-blind verification, single-line progress cadence, and non-blocking execution.
 ---
 
 # Execution Discipline (execution-discipline.md)
@@ -29,15 +29,4 @@ Universal operational discipline for executing commands, verifying tasks, and re
 
 - **Direct execution for lightweight tasks**: Execute 1–2 line modifications, configuration updates, and file reads directly without multi-step planning overhead.
 - **Non-blocking heavy tasks**: Execute tasks taking longer than 30 seconds (full builds, end-to-end browser walkthroughs) in the background so the conversational turn remains responsive.
-
-## 5. Mandatory Skill Triggers
-
-You MUST load and strictly adhere to the following skills before taking action in these scenarios:
-
-- **When Writing, Refactoring, or Adding Code**:
-  - You MUST load and follow the `ponytail` skill (`.agents/skills/ponytail/SKILL.md`) before generating code or choosing dependencies.
-  - Climb the ladder of laziness: check YAGNI, reuse existing codebase patterns, reach for standard library or native platform features before adding dependencies, and prefer one line over fifty.
-- **When Encountering Bugs, Test Failures, or Errors**:
-  - You MUST load and follow the `systematic-debugging` skill (`.agents/skills/systematic-debugging/SKILL.md`) before editing any file.
-  - Obey The Iron Law: NO fixes without root-cause investigation first. Never patch symptoms.
 

@@ -6,7 +6,7 @@ A modular AI engineering harness compatible with `npx skills`, Claude Code, Anti
 
 This repository is governed by the **3 Pillars** (Rule, Skill, Hook) and **3 Invariants** (Idempotency, Auto-wiring, Zero-dependency). See [Harness Architecture Documentation](docs/index.md) for the complete engineering specification.
 
-- **`rules/`** — AI behavioral and visual formatting standards (`execution-discipline.md`, `fluent-korean.md`, `terminal-response-format.md`)
+- **`rules/`** — AI behavioral, routing, and visual standards (`execution-discipline.md`, `fluent-korean.md`, `skill-routing.md`, `terminal-response-format.md`)
 - **`skills/`** — On-demand capabilities and agent workflows (`delegate-to-aside/`, `ponytail/`, `systematic-debugging/`, `writing-docs/`, `writing-docs-in-korean/`)
 - **`hooks/`** — Git-level physical hard gates (`commit-msg/` with AI signature block and 72-char limit)
 
