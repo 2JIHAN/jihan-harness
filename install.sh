@@ -121,8 +121,6 @@ if [ "$INSTALL_RULES" = true ]; then
   if [ ! -f "$AGENTS_FILE" ]; then
     cat << 'EOF' > "$AGENTS_FILE"
 # Project Guidelines
-
-This project adheres to the following workflow rules:
 EOF
     echo "   📝 Created: .agents/AGENTS.md"
   fi
