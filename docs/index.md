@@ -36,6 +36,8 @@ jihan-harness/
 │   └── terminal-response-format.md           # 터미널 응답 서식 규격
 ├── skills/                                   # [기둥 2] 온디맨드 스킬
 │   ├── delegate-to-aside/                    # Aside 브라우저 자동화
+│   ├── ponytail/                             # 미니멀 코딩 및 YAGNI 원칙
+│   ├── systematic-debugging/                 # 원인 규명 우선 디버깅
 │   ├── writing-docs/                         # 영문 문서 작성 규약
 │   └── writing-docs-in-korean/               # 한국어 문서 작성 규약
 ├── hooks/                                    # [기둥 3] 물리 하드 게이트

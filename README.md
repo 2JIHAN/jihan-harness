@@ -7,18 +7,24 @@ A modular AI engineering harness compatible with `npx skills`, Claude Code, Anti
 This repository is governed by the **3 Pillars** (Rule, Skill, Hook) and **3 Invariants** (Idempotency, Auto-wiring, Zero-dependency). See [Harness Architecture Documentation](docs/index.md) for the complete engineering specification.
 
 - **`rules/`** — AI behavioral and visual formatting standards (`execution-discipline.md`, `fluent-korean.md`, `terminal-response-format.md`)
-- **`skills/`** — On-demand capabilities and agent workflows (`delegate-to-aside/`, `writing-docs/`, `writing-docs-in-korean/`)
+- **`skills/`** — On-demand capabilities and agent workflows (`delegate-to-aside/`, `ponytail/`, `systematic-debugging/`, `writing-docs/`, `writing-docs-in-korean/`)
 - **`hooks/`** — Git-level physical hard gates (`commit-msg/` with AI signature block and 72-char limit)
 
 ## Available Skills
 
-### 1. [`delegate-to-aside`](skills/delegate-to-aside/SKILL.md)
+### 1. [`systematic-debugging`](skills/systematic-debugging/SKILL.md)
+Disciplined multi-phase debugging framework (`obra/superpowers`). Enforces root-cause investigation before proposing code edits. Prevents guess-and-check thrashing and symptom patching under pressure.
+
+### 2. [`ponytail`](skills/ponytail/SKILL.md)
+Minimalist coding philosophy by Dietrich Gebert. Enforces the "ladder of laziness": YAGNI, standard library first, native platform features before dependencies, and one line over fifty. Includes `lite`, `full`, and `ultra` intensity levels.
+
+### 3. [`delegate-to-aside`](skills/delegate-to-aside/SKILL.md)
 Automates the Aside AI browser by exchanging chat turns. Operates using the user's logged-in accounts directly, with real-time visual progress visible in the GUI.
 
-### 2. [`writing-docs`](skills/writing-docs/SKILL.md)
+### 4. [`writing-docs`](skills/writing-docs/SKILL.md)
 Universal engineering standards for documentation. Enforces strict scope discipline, eliminates introductory fluff and tombstone records, focuses on high-density big flows, and clearly separates human-facing vs model-facing writing.
 
-### 3. [`writing-docs-in-korean`](skills/writing-docs-in-korean/SKILL.md)
+### 5. [`writing-docs-in-korean`](skills/writing-docs-in-korean/SKILL.md)
 Korean-specific documentation standards. Combines scope discipline and tombstone elimination with natural Korean technical style: clean nominal endings for structured definitions, omission of artificial symmetric pairs, and high-density factual narratives.
 
 ---
