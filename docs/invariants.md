@@ -23,7 +23,7 @@
 
 ### 명세 및 구현 규칙
 - **루트 디렉터리 순수성 (Clean Root)** — 프로젝트 루트에는 단 하나의 가이드 파일(`CLAUDE.md`, `GEMINI.md`, `AGENTS.md`)도 노출시키지 않습니다. 모든 설정은 숨김 전용 폴더(`.agents/`, `.claude/`, `.gemini/`) 내부에 격리합니다.
-- **상대경로 단일 진실 공급원 (Relative SSOT)** — 
+- **상대경로 가이드 배선 (Relative Master Wiring)** — 
   - 마스터 가이드 원본은 [`.agents/AGENTS.md`](../docs/three-pillars.md#1-rule-always-on-context)에만 존재합니다.
   - `.claude/CLAUDE.md`는 `@../.agents/AGENTS.md` 1줄로 상대경로 참조합니다.
   - `.gemini/GEMINI.md`는 `@../.agents/AGENTS.md` 1줄로 상대경로 참조합니다.

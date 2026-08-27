@@ -5,7 +5,7 @@ description: Pure visual formatting standard for terminal and conversation outpu
 
 # Terminal Response Formatting (terminal-response-format.md)
 
-This document is the Single Source of Truth (SSOT) for **visual layout and formatting** when presenting outputs in terminal and chat environments. It defines visual structure only and is completely language-agnostic and self-contained.
+Visual layout and formatting standards for presenting outputs in terminal and chat environments. Defines visual structure only.
 
 ## 1. Core Principles
 
