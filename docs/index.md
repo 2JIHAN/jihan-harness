@@ -25,7 +25,7 @@ AI 코딩 에이전트의 작업 행동과 시스템 제약을 통제하는 모�
 ## 3. 디렉터리 맵
 
 ```text
-jihan-harness/
+jihan-harnesslake/
 ├── docs/                                     # 아키텍처 문서
 │   ├── index.md                              # 아키텍처 개요
 │   ├── three-pillars.md                      # Rule, Skill, Hook 세부 명세

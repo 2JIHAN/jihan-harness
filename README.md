@@ -1,6 +1,7 @@
-# Jihan Harness Catalog
+# Jihan HarnessLake
 
-A modular AI engineering harness compatible with `npx skills`, Claude Code, Antigravity, Cursor, and modern AI agent workflows.
+모든 AI 엔지니어링 하네스(Rules, Skills, Hooks)를 한곳에 집약하고 큐레이션하는 하네스 레이크(Harness Lake).
+Compatible with `npx skills`, Claude Code, Antigravity, Cursor, and modern AI agent workflows.
 
 ## Architecture
 
@@ -72,13 +73,13 @@ Install individual agent skills on-demand using the open `skills` standard:
 
 ```bash
 # Interactive selection
-npx skills add 2JIHAN/jihan-harness
+npx skills add 2JIHAN/jihan-harnesslake
 
 # Install specific skill directly
-npx skills add 2JIHAN/jihan-harness --skill delegate-to-aside
+npx skills add 2JIHAN/jihan-harnesslake --skill delegate-to-aside
 
 # Install globally across all agent frameworks
-npx skills add 2JIHAN/jihan-harness --skill delegate-to-aside -g
+npx skills add 2JIHAN/jihan-harnesslake --skill delegate-to-aside -g
 ```
 
 ## Quick Start (`delegate-to-aside`)

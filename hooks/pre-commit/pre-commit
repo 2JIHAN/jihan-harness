@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# hooks/pre-commit — Deterministic pre-commit gate for jihan-harness
+# hooks/pre-commit — Deterministic pre-commit gate for jihan-harnesslake
 # Enforces:
 # 1. Config Protection (Blocks weakening of linter/formatter configs)
 # 2. Secret Guard (Blocks staging of .env and private credentials)

@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# install.sh — Unified installer for jihan-harness (Hooks, Rules, Skills)
+# install.sh — Unified installer for jihan-harnesslake (Hooks, Rules, Skills)
 #
 # Usage:
 #   ./install.sh [options] [target_path]
@@ -80,7 +80,7 @@ fi
 mkdir -p "$TARGET_DIR"
 TARGET_DIR="$(cd "$TARGET_DIR" && pwd)"
 
-echo "🚀 [jihan-harness] Installing to: $TARGET_DIR"
+echo "🚀 [jihan-harnesslake] Installing to: $TARGET_DIR"
 echo "──────────────────────────────────────────────"
 
 # 2. Install Hooks
@@ -188,4 +188,4 @@ if [ "$INSTALL_SKILLS" = true ]; then
 fi
 
 echo "──────────────────────────────────────────────"
-echo "✨ [jihan-harness] Installation completed successfully!"
+echo "✨ [jihan-harnesslake] Installation completed successfully!"
