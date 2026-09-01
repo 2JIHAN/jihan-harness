@@ -5,10 +5,11 @@
 // Updating state.db to 0 makes it visible in the GUI and reusable via --session.
 //
 // Usage: node 02-open-session.mjs <name> [account] [URL]
+// The account may be "u1", "1", or an email address, in any of the trailing positions.
 
 import { mkdirSync, readdirSync } from 'node:fs';
 import { join } from 'node:path';
-import { ask, defaultAccount, ensureBridge, executeSql, saveSession, sessionsDir, userDir, tailOf } from './lib.mjs';
+import { ask, defaultAccount, ensureBridge, executeSql, isAccountArg, saveSession, sessionsDir, userDir, tailOf } from './lib.mjs';
 
 let account = defaultAccount();
 let name = '';
@@ -21,17 +22,18 @@ if (args.length === 0) {
   process.exit(1);
 }
 
-if (/^u\d+$/i.test(args[0])) {
+if (isAccountArg(args[0])) {
   account = args[0].toLowerCase();
   name = args[1] || `task_${new Date().toISOString().slice(11, 19).replace(/:/g, '')}`;
   url = args[2] || '';
 } else {
   name = args[0];
-  if (args[1] && /^u\d+$/i.test(args[1])) {
+  if (args[1] && isAccountArg(args[1])) {
     account = args[1].toLowerCase();
     url = args[2] || '';
   } else {
     url = args[1] || '';
+    if (args[2] && isAccountArg(args[2])) account = args[2].toLowerCase();
   }
 }
 

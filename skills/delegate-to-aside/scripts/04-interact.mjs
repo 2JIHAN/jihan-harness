@@ -17,6 +17,7 @@ import {
   ask,
   defaultAccount,
   resolveSession,
+  isAccountArg,
   tailOf,
   visualClick,
   visualInspect,
@@ -46,8 +47,8 @@ async function run() {
     case 'goto':
     case 'navigate': {
       const url = rest[0];
-      const account = rest[1] && /^u\d+$/i.test(rest[1]) ? rest[1] : defaultAccount();
-      const sessionName = rest[2] || (rest[1] && !/^u\d+$/i.test(rest[1]) ? rest[1] : undefined);
+      const account = rest[1] && isAccountArg(rest[1]) ? rest[1] : defaultAccount();
+      const sessionName = rest[2] || (rest[1] && !isAccountArg(rest[1]) ? rest[1] : undefined);
       const session = resolveSession(account, sessionName);
       if (!url) {
         console.error('Please specify a URL. Example: node 04-interact.mjs goto https://example.com');
@@ -60,8 +61,8 @@ async function run() {
 
     case 'click': {
       const target = rest[0];
-      const account = rest[1] && /^u\d+$/i.test(rest[1]) ? rest[1] : defaultAccount();
-      const sessionName = rest[2] || (rest[1] && !/^u\d+$/i.test(rest[1]) ? rest[1] : undefined);
+      const account = rest[1] && isAccountArg(rest[1]) ? rest[1] : defaultAccount();
+      const sessionName = rest[2] || (rest[1] && !isAccountArg(rest[1]) ? rest[1] : undefined);
       const session = resolveSession(account, sessionName);
       if (!target) {
         console.error('Please specify a target to click. Example: node 04-interact.mjs click "Login button"');
@@ -76,8 +77,8 @@ async function run() {
     case 'input': {
       const target = rest[0];
       const text = rest[1];
-      const account = rest[2] && /^u\d+$/i.test(rest[2]) ? rest[2] : defaultAccount();
-      const sessionName = rest[3] || (rest[2] && !/^u\d+$/i.test(rest[2]) ? rest[2] : undefined);
+      const account = rest[2] && isAccountArg(rest[2]) ? rest[2] : defaultAccount();
+      const sessionName = rest[3] || (rest[2] && !isAccountArg(rest[2]) ? rest[2] : undefined);
       const session = resolveSession(account, sessionName);
       if (!target || text === undefined) {
         console.error('Please specify an input field and value. Example: node 04-interact.mjs type "Search input" "keyword"');
@@ -91,8 +92,8 @@ async function run() {
     case 'inspect':
     case 'check': {
       const question = rest[0];
-      const account = rest[1] && /^u\d+$/i.test(rest[1]) ? rest[1] : defaultAccount();
-      const sessionName = rest[2] || (rest[1] && !/^u\d+$/i.test(rest[1]) ? rest[1] : undefined);
+      const account = rest[1] && isAccountArg(rest[1]) ? rest[1] : defaultAccount();
+      const sessionName = rest[2] || (rest[1] && !isAccountArg(rest[1]) ? rest[1] : undefined);
       const session = resolveSession(account, sessionName);
       if (!question) {
         console.error('Please specify an inspection question. Example: node 04-interact.mjs inspect "What is the visible title?"');
@@ -105,8 +106,8 @@ async function run() {
 
     case 'scroll': {
       const dir = rest[0] === 'up' ? 'up' : 'down';
-      const account = rest[1] && /^u\d+$/i.test(rest[1]) ? rest[1] : defaultAccount();
-      const sessionName = rest[2] || (rest[1] && !/^u\d+$/i.test(rest[1]) ? rest[1] : undefined);
+      const account = rest[1] && isAccountArg(rest[1]) ? rest[1] : defaultAccount();
+      const sessionName = rest[2] || (rest[1] && !isAccountArg(rest[1]) ? rest[1] : undefined);
       const session = resolveSession(account, sessionName);
       const out = withTokenTracking(account, session, () => visualScroll(account, dir, session));
       console.log(tailOf(out, 10));
@@ -115,8 +116,8 @@ async function run() {
 
     case 'fallback': {
       const instruction = rest[0];
-      const account = rest[1] && /^u\d+$/i.test(rest[1]) ? rest[1] : defaultAccount();
-      const sessionName = rest[2] || (rest[1] && !/^u\d+$/i.test(rest[1]) ? rest[1] : undefined);
+      const account = rest[1] && isAccountArg(rest[1]) ? rest[1] : defaultAccount();
+      const sessionName = rest[2] || (rest[1] && !isAccountArg(rest[1]) ? rest[1] : undefined);
       const session = resolveSession(account, sessionName);
       if (!instruction) {
         console.error('Please specify a fallback instruction.');

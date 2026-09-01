@@ -13,6 +13,18 @@ The code lives in the `scripts/` directory of this skill. The upstream repositor
 
 Use this skill when web workflows require user logged-in sessions (e.g., Slack app settings, Google Cloud Console, Notion, internal dashboards) or when real-time visual progress monitoring in the Aside GUI is desirable.
 
+## Profile Selection Gate (Mandatory, First Step)
+
+Every script defaults to the active window's account, so an unspecified profile means "whichever window happens to be open" — usually the wrong one. Choose the profile **before** opening a session.
+
+1. **List profiles first** — run `node profiles.mjs` before `01-ensure-window.mjs` or `02-open-session.mjs`. It prints account (`u0`, `u1`, ...), profile directory, display name, and signed-in email.
+2. **Ask which one** — show the user that table and ask which account the task should run under. Personal and business accounts sit side by side; the running window is not the answer.
+3. **Pass it explicitly, by email** — account numbers and profile folder names both shift, so pass the address: `node 02-open-session.mjs "Task" URL you@example.com` (or `ASIDE_ACCOUNT=...`). Every script resolves an email, `u1`, or `1`. Never rely on the default.
+4. **Re-confirm on the page** — once the console loads, read the signed-in email from the profile menu and check it matches the chosen profile before creating, modifying, or deleting anything. Navigation, screenshots, and read-only inspection need no approval.
+5. **Log the outcome** — append one row to `account-decisions.md` in this skill folder for every choice, approval, and rejection.
+
+Until three decisions are logged, ask every time. Once three accumulate, derive a criterion from that log, confirm it with the user, and record it in `account-decisions.md`; only then may clearly matching cases proceed without asking.
+
 ## Basic Workflow
 
 ```bash
@@ -49,6 +61,16 @@ Avoid having the main session block synchronously in front of `03-say.mjs` or `0
 1. **Vision-First UI Interaction** — Do not dump or parse massive HTML sources or full DOM trees. Perceive screenshots and visual layouts, then simulate real user actions: **mouse clicks and keyboard typing**.
 2. **Restricted Fallback** — Allow direct DOM queries or fetch only under unavoidable circumstances such as CAPTCHA detection or non-rendered network payload verification.
 3. **Modular Execution** — Use dedicated functions in `04-interact.mjs` and `lib.mjs` (`visualClick`, `visualType`, `visualNavigate`, `visualInspect`, `visualScroll`).
+
+## Anti-Hallucination Verification Protocol (Mandatory)
+
+Aside's internal agent can hallucinate narrative text claiming an action was completed without actually firing browser events.
+1. **Never trust narrative text alone**: Do not report success based only on Aside's assistant text ("Message sent", "Clicked button").
+2. **Require DOM & State Assertions**:
+   - For form/chat inputs: Verify input value cleared after `Enter`/submit (`toHaveValue('')` or `innerText() === ''`).
+   - For page transitions: Check `page.url` or `snapshot(page)` for destination headings/elements.
+   - For chat/data submissions: Check that the sent text AND server response nodes are present in `snapshot(page)`.
+3. **Cross-Check with Backend**: When testing local servers/bots (e.g. Slack bots, webhooks), verify that backend process logs (e.g. `launchd` logs, DB records) received the event.
 
 ## Minimize Tabs and Close Finished Ones
 

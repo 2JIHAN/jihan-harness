@@ -1,8 +1,9 @@
 #!/usr/bin/env node
 // Inspect Aside profile configuration. Run this first before initiating workflows.
 //
-// Account IDs do not strictly match profile folder names (e.g. u1 is not "Profile 1").
-// Use values discovered here rather than assuming mappings.
+// Account IDs do not strictly match profile folder names (e.g. u1 is not "Profile 1"),
+// and both drift as profiles are added or removed. Read the mapping here every time.
+// Every script also accepts an email in place of "u1", which survives renumbering.
 //
 // Usage: node profiles.mjs [account]     Passing account verifies bridge connectivity as well.
 
@@ -16,7 +17,7 @@ console.log('Account  Profile Dir   Display Name   Email                        
 console.log('-------  ------------  -------------  ------------------------------  ------  -----------');
 for (const r of rows) {
   console.log(
-    `${r.account.padEnd(9)}${r.folder.padEnd(14)}${r.label.padEnd(15)}${r.email.padEnd(32)}${(r.open ? 'Open' : r.restore ? 'Restore' : '-').padEnd(8)}${r.lastActive}`
+    `${r.account.padEnd(9)}${r.folder.padEnd(14)}${r.label.padEnd(15)}${r.email.padEnd(32)}${(r.open ? 'Open' : r.restore ? 'Restore' : '-').padEnd(8)}${r.lastActive}${r.missing ? '   [stale binding: folder missing]' : ''}`
   );
 }
 

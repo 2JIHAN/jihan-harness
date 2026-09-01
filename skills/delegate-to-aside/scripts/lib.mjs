@@ -14,7 +14,7 @@ try {
 } catch {}
 
 const home = homedir();
-export const userDir = (account) => join(home, '.aside', 'u', account.replace(/^u/, ''));
+export const userDir = (account) => join(home, '.aside', 'u', resolveAccount(account).replace(/^u/, ''));
 export const sessionsDir = (account) => join(userDir(account), 'sessions');
 const storeFile = (account) => join(userDir(account), '.named-sessions.json');
 
@@ -82,13 +82,27 @@ export function ensureAppRunning({ waitSec = 15, background = true } = {}) {
 }
 
 // ── Profile Discovery ─────────────────────────────────────────
+// Bindings live under two keys that drift apart, and either can point at a profile
+// folder that no longer exists. Merge both, then trust only what is on disk.
+function readBindings() {
+  const accountsPath = join(home, '.aside', 'accounts.json');
+  if (!existsSync(accountsPath)) return [];
+  const raw = JSON.parse(readFileSync(accountsPath, 'utf8'));
+  const merged = new Map();
+  for (const key of ['profileBindings', 'profileAccountBindings']) {
+    for (const e of Object.values(raw[key] || {})) {
+      if (e.accountId === undefined || !e.profilePath) continue;
+      const prev = merged.get(e.accountId);
+      if (!prev || (!existsSync(prev.profilePath) && existsSync(e.profilePath))) merged.set(e.accountId, e);
+    }
+  }
+  const emails = Object.fromEntries((raw.accounts || []).map((a) => [a.id, a.email || '']));
+  return [...merged.values()].map((e) => ({ ...e, email: emails[e.accountId] || '' }));
+}
+
 export function getProfiles() {
   ensureAppRunning({ background: true });
   const appRunning = isAppRunning();
-  const accountsPath = join(home, '.aside', 'accounts.json');
-  const binds = existsSync(accountsPath)
-    ? JSON.parse(readFileSync(accountsPath, 'utf8')).profileAccountBindings || {}
-    : {};
   const localStatePath = join(home, 'Library/Application Support/Aside/Local State');
   const localState = existsSync(localStatePath)
     ? JSON.parse(readFileSync(localStatePath, 'utf8')).profile || {}
@@ -98,16 +112,16 @@ export function getProfiles() {
   const cache = localState.info_cache || {};
 
   const rows = [];
-  for (const e of Object.values(binds)) {
-    const folder = basename(e.profilePath || '');
+  for (const e of readBindings()) {
+    const folder = basename(e.profilePath);
     const info = cache[folder] || {};
-    const accKey = `u${e.accountId}`;
     rows.push({
-      account: accKey,
+      account: `u${e.accountId}`,
       accountId: e.accountId,
       folder,
+      missing: !existsSync(e.profilePath),
       label: info.gaia_name || info.name || '-',
-      email: info.user_name || '-',
+      email: e.email || info.user_name || '-',
       open: openProfiles.has(folder),
       restore: restoreList.has(folder),
       lastActive: info.active_time ? new Date(info.active_time * 1000).toISOString().slice(11, 16) : '-',
@@ -115,6 +129,21 @@ export function getProfiles() {
   }
   rows.sort((a, b) => a.account.localeCompare(b.account));
   return rows;
+}
+
+// Does this CLI argument name an account? Accepts "u1", "1", or an email address.
+export const isAccountArg = (s) => typeof s === 'string' && (/^u?\d+$/i.test(s) || s.includes('@'));
+
+// Accept "u1", "1", or an email address. Pin work to the email when you have one:
+// account numbers and profile folder names both shift as profiles are added or removed.
+export function resolveAccount(input) {
+  const want = String(input ?? '').trim();
+  if (/^u?\d+$/.test(want)) return `u${want.replace(/^u/, '')}`;
+  const rows = getProfiles();
+  const hit = rows.find((r) => r.email && r.email.toLowerCase() === want.toLowerCase());
+  if (hit) return hit.account;
+  const known = rows.map((r) => `${r.account} (${r.email})`).join(', ') || 'none';
+  throw new Error(`Could not resolve account "${want}". Known accounts: ${known}`);
 }
 
 // Automatically discover default account (prefers open window, then first available, fallback 'u0')
@@ -131,13 +160,14 @@ export function defaultAccount() {
 
 // Map account key to Chrome profile directory
 export function profileFor(account) {
-  const binds =
-    JSON.parse(readFileSync(join(home, '.aside', 'accounts.json'), 'utf8')).profileAccountBindings || {};
-  const want = Number(account.replace(/^u/, ''));
-  for (const e of Object.values(binds)) {
-    if (e.accountId === want && e.profilePath) return basename(e.profilePath);
-  }
-  throw new Error(`Could not find profile bound to account ${account}.`);
+  const want = Number(resolveAccount(account).replace(/^u/, ''));
+  const bind = readBindings().find((e) => e.accountId === want);
+  if (!bind) throw new Error(`Could not find profile bound to account ${account}.`);
+  if (!existsSync(bind.profilePath))
+    throw new Error(
+      `Account ${account} is bound to "${basename(bind.profilePath)}", which no longer exists on disk. Run profiles.mjs and pick a live profile.`
+    );
+  return basename(bind.profilePath);
 }
 
 // Check if browser bridge is reachable
@@ -220,7 +250,7 @@ export function resolveSession(account, name) {
 export const TURN_TIMEOUT_MS = Number(process.env.ASIDE_TURN_TIMEOUT_MS || 120_000);
 
 export function ask(account, prompt, session, { timeout = TURN_TIMEOUT_MS } = {}) {
-  const base = ['exec', '--account', account];
+  const base = ['exec', '--account', resolveAccount(account)];
   if (session) base.push('--session', session);
   const run = () => execFileSync('aside', [...base, prompt], { encoding: 'utf8', timeout });
 
