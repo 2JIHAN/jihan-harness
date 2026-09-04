@@ -24,16 +24,14 @@ Always-on dispatch rules. You MUST load and strictly adhere to the designated sk
   - Obey The Iron Law: NO fixes without root-cause investigation first.
   - Complete Phase 1 (investigate, reproduce, trace call path) before proposing fixes. Never apply symptom patches (e.g. premature null guards).
 
-## 3. Creating, Editing, or Pruning Documentation
+## 3. Creating, Editing, or Pruning Korean Documentation
 
-- **Mandatory Skills**:
-  - English documents: `.agents/skills/writing-docs/SKILL.md`
-  - Korean documents: `.agents/skills/writing-docs-in-korean/SKILL.md`
-- **When**: Writing or modifying READMEs, specifications, ADRs, user guides, or design documents.
+- **Mandatory Skill**: `.agents/skills/writing-docs-in-korean/SKILL.md`
+- **When**: Writing or modifying Korean READMEs, specifications, ADRs, user guides, or design documents.
 - **Directives**:
   - Enforce strict scope discipline and eliminate introductory fluff.
   - Delete cleanly without tombstones or `<details>` blocks.
-  - For structured Korean documents: use clean nominal endings for definitions rather than forcing repetitive `~이다.` endings.
+  - Use clean nominal endings for structured definitions rather than forcing repetitive `~이다.` endings.
 
 ## 4. Web Workflows with Authenticated Sessions
 

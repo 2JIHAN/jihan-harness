@@ -37,12 +37,15 @@ jihan-harnesslake/
 │   └── terminal-response-format.md           # 터미널 응답 서식 규격
 ├── skills/                                   # [기둥 2] 온디맨드 스킬
 │   ├── delegate-to-aside/                    # Aside 브라우저 자동화
+│   ├── domain-modeling/                      # 용어집 및 ADR 기록 (grill-with-docs 의존)
+│   ├── grill-me/                             # 계획 심문 진입점 (무상태)
+│   ├── grill-with-docs/                      # 계획 심문 + 문서 기록 진입점
+│   ├── grilling/                             # 라운드 단위 심문 원시 기능
 │   ├── ponytail/                             # 미니멀 코딩 및 YAGNI 원칙
 │   ├── ponytail-audit/                       # 전수 과잉 엔지니어링 감사
 │   ├── ponytail-debt/                        # 지름길 부채 장부 수확
 │   ├── ponytail-review/                      # diff 복잡성 사냥 리뷰
 │   ├── systematic-debugging/                 # 원인 규명 우선 디버깅
-│   ├── writing-docs/                         # 영문 문서 작성 규약
 │   └── writing-docs-in-korean/               # 한국어 문서 작성 규약
 ├── hooks/                                    # [기둥 3] 물리 하드 게이트
 │   ├── commit-msg/                           # Conventional Commits + AI 서명 차단

@@ -8,7 +8,7 @@ Compatible with `npx skills`, Claude Code, Antigravity, Cursor, and modern AI ag
 This repository is governed by the **3 Pillars** (Rule, Skill, Hook) and **3 Invariants** (Idempotency, Auto-wiring, Zero-dependency). See [Harness Architecture Documentation](docs/index.md) for the complete engineering specification.
 
 - **`rules/`** — AI behavioral, routing, and visual standards (`fluent-korean.md`, `skill-routing.md`, `task-execution-protocol.md`, `terminal-response-format.md`)
-- **`skills/`** — On-demand capabilities and agent workflows (`delegate-to-aside/`, `ponytail/`, `ponytail-audit/`, `ponytail-debt/`, `ponytail-review/`, `systematic-debugging/`, `writing-docs/`, `writing-docs-in-korean/`)
+- **`skills/`** — On-demand capabilities and agent workflows (`delegate-to-aside/`, `domain-modeling/`, `graph-artifact-builder/`, `grill-me/`, `grill-with-docs/`, `grilling/`, `ponytail/`, `ponytail-audit/`, `ponytail-debt/`, `ponytail-review/`, `systematic-debugging/`, `writing-docs-in-korean/`)
 - **`hooks/`** — Git-level physical hard gates (`commit-msg/` for Conventional Commits & AI signature blocking, `pre-commit/` for config protection & secret guarding)
 
 ## Available Skills
@@ -31,11 +31,23 @@ Harvests deliberate `# ponytail:` shortcut comments across the codebase into a t
 ### 6. [`delegate-to-aside`](skills/delegate-to-aside/SKILL.md)
 Automates the Aside AI browser by exchanging chat turns. Operates using the user's logged-in accounts directly, with real-time visual progress visible in the GUI.
 
-### 7. [`writing-docs`](skills/writing-docs/SKILL.md)
-Universal engineering standards for documentation. Enforces strict scope discipline, eliminates introductory fluff and tombstone records, focuses on high-density big flows, and clearly separates human-facing vs model-facing writing.
+### 7. [`graph-artifact-builder`](skills/graph-artifact-builder/SKILL.md)
+Self-contained interactive HTML artifacts featuring Obsidian-style node-edge network graph visualizations (file backlinks, dependency maps, entity relationships) using `force-graph`.
 
 ### 8. [`writing-docs-in-korean`](skills/writing-docs-in-korean/SKILL.md)
 Korean-specific documentation standards. Combines scope discipline and tombstone elimination with natural Korean technical style: clean nominal endings for structured definitions, omission of artificial symmetric pairs, and high-density factual narratives.
+
+### 9. [`grill-me`](skills/grill-me/SKILL.md)
+User-invoked entry point for a relentless planning interview (`mattpocock/skills`). Delegates to `grilling`. Stateless: it writes no files, and the only output is a sharpened plan.
+
+### 10. [`grill-with-docs`](skills/grill-with-docs/SKILL.md)
+Same interview as `grill-me`, but stateful (`mattpocock/skills`). Delegates to `grilling` and `domain-modeling`, so resolved terminology lands in `CONTEXT.md` and load-bearing trade-offs land in `docs/adr/` while the session runs.
+
+### 11. [`grilling`](skills/grilling/SKILL.md)
+The interview primitive behind both `grill-*` entry points. Maps the work as a design tree and asks the whole frontier (every question whose prerequisites are already settled) in numbered rounds, each with a recommended answer. Facts are researched by sub-agents; only decisions are put to the user.
+
+### 12. [`domain-modeling`](skills/domain-modeling/SKILL.md)
+Builds and sharpens the project glossary during a session. Challenges conflicting terms against `CONTEXT.md`, cross-references claims with the code, and offers an ADR only when the decision is hard to reverse, surprising without context, and the result of a real trade-off.
 
 ## Available Hooks
 

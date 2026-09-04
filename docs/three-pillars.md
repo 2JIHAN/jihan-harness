@@ -24,7 +24,7 @@
 - **정의** — 평소에는 이름과 설명 메타데이터(약 20~30 토큰)만 유지하다가, 관련 작업 수행 시에만 본문 전체를 동적으로 불러오는 온디맨드 패키지
 - **수록 기준**
   - 도구 연동 및 브라우저 제어 절차 ([`delegate-to-aside/`](../skills/delegate-to-aside/))
-  - 조건부 작업 규약 ([`writing-docs/`](../skills/writing-docs/))
+  - 조건부 작업 규약 ([`writing-docs-in-korean/`](../skills/writing-docs-in-korean/))
   - 체계적인 디버깅 기법 및 도메인 특화 방법론
 - **수록 금지 대상**
   - 모든 턴에서 무조건 지켜야 하는 공통 언어 어조나 출력 서식
@@ -65,7 +65,7 @@
 
 이 모순을 해결하기 위해 **Rule에 가벼운 신호등(트리거 포인터)을 두고, 본문은 Skill에 격리하는 라우터 패턴**을 적용한다:
 
-- **Rule (`skill-routing.md`)** — 작업 맥락별 필수 스킬(코딩 시 `ponytail`, 디버깅 시 `systematic-debugging`, 문서 작성 시 `writing-docs`) 라우팅 지침만 상시 주입 (약 50토큰 소비).
+- **Rule (`skill-routing.md`)** — 작업 맥락별 필수 스킬(코딩 시 `ponytail`, 디버깅 시 `systematic-debugging`, 한국어 문서 작성 시 `writing-docs-in-korean`) 라우팅 지침만 상시 주입 (약 50토큰 소비).
 - **Skill (`skills/*/SKILL.md`)** — 100~300줄에 달하는 구체적 방법론과 레퍼런스는 온디맨드로 유지.
 - **효과** — 상시 컨텍스트 비용을 최소화하면서도, 특정 작업 발생 시 스킬을 반드시 거치도록 모델의 행동 순서를 강제한다.
 
