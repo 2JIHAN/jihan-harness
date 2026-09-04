@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Interactive Knowledge Graph (d3-force)</title>
+  <script src="https://d3js.org/d3.v7.min.js"></script>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      padding: 0;
+      background: #121212;
+      color: #e0e0e0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      overflow: hidden;
+    }
+    #header {
+      position: absolute;
+      top: 16px;
+      left: 16px;
+      z-index: 10;
+      background: rgba(30, 30, 30, 0.75);
+      padding: 12px 16px;
+      border-radius: 8px;
+      backdrop-filter: blur(8px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      pointer-events: auto;
+      max-width: 320px;
+    }
+    h2 {
+      margin: 0 0 6px 0;
+      font-size: 16px;
+      font-weight: 600;
+      color: #fff;
+    }
+    p {
+      margin: 0;
+      font-size: 12px;
+      color: #aaa;
+      line-height: 1.4;
+    }
+    #graph-container {
+      width: 100vw;
+      height: 100vh;
+    }
+    .legend {
+      margin-top: 8px;
+      font-size: 11px;
+      color: #888;
+    }
+    svg {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+    .link {
+      stroke: rgba(255, 255, 255, 0.2);
+      stroke-width: 1.5px;
+      transition: stroke 0.2s, stroke-width 0.2s, opacity 0.2s;
+    }
+    .node {
+      cursor: pointer;
+      transition: opacity 0.2s;
+    }
+    .node text {
+      font-size: 11px;
+      fill: #e0e0e0;
+      pointer-events: none;
+      text-anchor: middle;
+      dominant-baseline: central;
+    }
+    .dimmed {
+      opacity: 0.15 !important;
+    }
+    .highlighted-link {
+      stroke: #4daafc !important;
+      stroke-width: 2.5px !important;
+      opacity: 1 !important;
+    }
+  </style>
+</head>
+<body>
+  <div id="header">
+    <h2 id="graph-title">Knowledge Graph (d3-force)</h2>
+    <p>• <b>Click Node</b>: Highlight neighbors & links<br>• <b>Click Background</b>: Reset highlight<br>• <b>Drag Node</b>: Pin position<br>• <b>Pan / Zoom</b>: Mouse drag & wheel</p>
+    <div id="stats" class="legend"></div>
+  </div>
+
+  <div id="graph-container">
+    <svg id="graph-svg"></svg>
+  </div>
+
+  <script>
+    // ==========================================
+    // 1. Graph Data (Replace with actual data)
+    // ==========================================
+    const gData = {
+      nodes: [
+        { id: "README.md", name: "README", group: "doc", val: 15 },
+        { id: "core/engine.ts", name: "Engine", group: "core", val: 12 },
+        { id: "utils/parser.ts", name: "Parser", group: "util", val: 8 },
+        { id: "api/routes.ts", name: "Routes", group: "api", val: 10 },
+        { id: "types/index.ts", name: "Types", group: "type", val: 6 }
+      ],
+      links: [
+        { source: "README.md", target: "core/engine.ts" },
+        { source: "core/engine.ts", target: "utils/parser.ts" },
+        { source: "core/engine.ts", target: "types/index.ts" },
+        { source: "api/routes.ts", target: "core/engine.ts" },
+        { source: "api/routes.ts", target: "types/index.ts" }
+      ]
+    };
+
+    // Update Stats Display
+    document.getElementById('stats').innerText = 
+      `Nodes: ${gData.nodes.length} | Links: ${gData.links.length}`;
+
+    // ==========================================
+    // 2. Setup D3 Color Scale & Neighbors
+    // ==========================================
+    const colorScale = d3.scaleOrdinal(d3.schemeCategory10);
+    const linkedByIndex = {};
+    gData.links.forEach(d => {
+      linkedByIndex[`${d.source},${d.target}`] = true;
+    });
+
+    function isConnected(a, b) {
+      return a.id === b.id || linkedByIndex[`${a.id},${b.id}`] || linkedByIndex[`${b.id},${a.id}`];
+    }
+
+    // ==========================================
+    // 3. Setup SVG, Zoom & Container
+    // ==========================================
+    const svg = d3.select("#graph-svg");
+    let width = window.innerWidth;
+    let height = window.innerHeight;
+
+    const g = svg.append("g");
+
+    const zoom = d3.zoom()
+      .scaleExtent([0.1, 8])
+      .on("zoom", (event) => {
+        g.attr("transform", event.transform);
+      });
+
+    svg.call(zoom);
+
+    svg.on("click", (event) => {
+      if (event.target.tagName === "svg") {
+        nodeGroup.classed("dimmed", false);
+        linkGroup.classed("dimmed", false).classed("highlighted-link", false);
+      }
+    });
+
+    // ==========================================
+    // 4. Force Simulation Setup
+    // ==========================================
+    const simulation = d3.forceSimulation(gData.nodes)
+      .force("link", d3.forceLink(gData.links).id(d => d.id).distance(90))
+      .force("charge", d3.forceManyBody().strength(-240))
+      .force("center", d3.forceCenter(width / 2, height / 2))
+      .force("collision", d3.forceCollide().radius(d => (d.val || 8) + 12));
+
+    // Render Links
+    const linkGroup = g.append("g")
+      .attr("class", "links")
+      .selectAll("line")
+      .data(gData.links)
+      .join("line")
+      .attr("class", "link");
+
+    // Render Nodes
+    const nodeGroup = g.append("g")
+      .attr("class", "nodes")
+      .selectAll("g")
+      .data(gData.nodes)
+      .join("g")
+      .attr("class", "node")
+      .call(drag(simulation));
+
+    nodeGroup.append("circle")
+      .attr("r", d => d.val || 8)
+      .attr("fill", d => colorScale(d.group || "default"))
+      .attr("stroke", "#ffffff")
+      .attr("stroke-width", 1.5);
+
+    nodeGroup.append("text")
+      .attr("dy", d => (d.val || 8) + 12)
+      .text(d => d.name || d.id);
+
+    // Node Interaction
+    nodeGroup.on("click", (event, d) => {
+      event.stopPropagation();
+      nodeGroup.classed("dimmed", n => !isConnected(d, n));
+      linkGroup.classed("dimmed", l => l.source.id !== d.id && l.target.id !== d.id);
+      linkGroup.classed("highlighted-link", l => l.source.id === d.id || l.target.id === d.id);
+    });
+
+    // Simulation Tick
+    simulation.on("tick", () => {
+      linkGroup
+        .attr("x1", d => d.source.x)
+        .attr("y1", d => d.source.y)
+        .attr("x2", d => d.target.x)
+        .attr("y2", d => d.target.y);
+
+      nodeGroup
+        .attr("transform", d => `translate(${d.x},${d.y})`);
+    });
+
+    // Drag behavior
+    function drag(sim) {
+      function dragstarted(event) {
+        if (!event.active) sim.alphaTarget(0.3).restart();
+        event.subject.fx = event.subject.x;
+        event.subject.fy = event.subject.y;
+      }
+      function dragged(event) {
+        event.subject.fx = event.x;
+        event.subject.fy = event.y;
+      }
+      function dragended(event) {
+        if (!event.active) sim.alphaTarget(0);
+        event.subject.fx = null;
+        event.subject.fy = null;
+      }
+      return d3.drag()
+        .on("start", dragstarted)
+        .on("drag", dragged)
+        .on("end", dragended);
+    }
+
+    // Responsive Resize
+    window.addEventListener("resize", () => {
+      width = window.innerWidth;
+      height = window.innerHeight;
+      simulation.force("center", d3.forceCenter(width / 2, height / 2));
+      simulation.alpha(0.3).restart();
+    });
+  </script>
+</body>
+</html>
