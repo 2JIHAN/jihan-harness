@@ -7,7 +7,8 @@ Compatible with `npx skills`, Claude Code, Antigravity, Cursor, and modern AI ag
 
 This repository is governed by the **3 Pillars** (Rule, Skill, Hook) and **3 Invariants** (Idempotency, Auto-wiring, Zero-dependency). See [Harness Architecture Documentation](docs/index.md) for the complete engineering specification.
 
-- **`rules/`** — AI behavioral, routing, and visual standards (`fluent-korean.md`, `skill-routing.md`, `task-execution-protocol.md`, `terminal-response-format.md`)
+- **`rules/`** — AI behavioral and visual standards (`fluent-korean.md`, `task-execution-protocol.md`, `terminal-response-format.md`)
+- **`skills/INDEX.md`** — The always-on skill catalog. The only resident pointer to the skill bodies below
 - **`skills/`** — On-demand capabilities and agent workflows (`delegate-to-aside/`, `domain-modeling/`, `graph-artifact-builder/`, `grill-me/`, `grill-with-docs/`, `grilling/`, `ponytail/`, `ponytail-audit/`, `ponytail-debt/`, `ponytail-review/`, `systematic-debugging/`, `writing-docs-in-korean/`)
 - **`hooks/`** — Git-level physical hard gates (`commit-msg/` for Conventional Commits & AI signature blocking, `pre-commit/` for config protection & secret guarding)
 

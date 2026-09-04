@@ -180,6 +180,28 @@ if [ "$INSTALL_SKILLS" = true ]; then
     fi
   done
 
+  # Install the always-on skills catalog
+  if [ -f "$SCRIPT_DIR/skills/INDEX.md" ]; then
+    if [ "$USE_SYMLINK" = true ]; then
+      ln -sf "$SCRIPT_DIR/skills/INDEX.md" "$SKILLS_TARGET/INDEX.md"
+      echo "   🔗 Symlinked: .agents/skills/INDEX.md"
+    else
+      cp "$SCRIPT_DIR/skills/INDEX.md" "$SKILLS_TARGET/INDEX.md"
+      echo "   📄 Copied: .agents/skills/INDEX.md"
+    fi
+
+    # Wire the catalog into .agents/AGENTS.md so it stays resident
+    AGENTS_FILE="$TARGET_DIR/.agents/AGENTS.md"
+    if [ ! -f "$AGENTS_FILE" ]; then
+      echo "# Project Guidelines" > "$AGENTS_FILE"
+      echo "   📝 Created: .agents/AGENTS.md"
+    fi
+    if ! grep -qF "@skills/INDEX.md" "$AGENTS_FILE"; then
+      printf '\n@skills/INDEX.md\n' >> "$AGENTS_FILE"
+      echo "   🔌 Wired 'skills/INDEX.md' into .agents/AGENTS.md"
+    fi
+  fi
+
   # Wire Claude Code native skills discovery (.claude/skills)
   CLAUDE_DIR="$TARGET_DIR/.claude"
   mkdir -p "$CLAUDE_DIR"

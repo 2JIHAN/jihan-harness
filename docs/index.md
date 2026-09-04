@@ -32,10 +32,10 @@ jihan-harnesslake/
 │   └── invariants.md                         # 멱등성, 자동 배선, 무의존성 명세
 ├── rules/                                    # [기둥 1] 상시 적용 규칙
 │   ├── fluent-korean.md                      # 한국어 표현 규약
-│   ├── skill-routing.md                      # 작업 맥락별 스킬 라우팅 테이블
 │   ├── task-execution-protocol.md            # 태스크 실행 프로토콜 (폴링 차단 및 실측 검증)
 │   └── terminal-response-format.md           # 터미널 응답 서식 규격
 ├── skills/                                   # [기둥 2] 온디맨드 스킬
+│   ├── INDEX.md                              # 상시 주입 스킬 카탈로그 (트리거 테이블)
 │   ├── delegate-to-aside/                    # Aside 브라우저 자동화
 │   ├── domain-modeling/                      # 용어집 및 ADR 기록 (grill-with-docs 의존)
 │   ├── grill-me/                             # 계획 심문 진입점 (무상태)
